@@ -1,0 +1,32 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Typing Game</title>
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+      crossorigin="anonymous"
+    ></script>
+    <link href="style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <section class="game">
+      <section class="mode">
+        <p class="life">
+          Life: <span class="life__points life__points--healthy">0</span>
+        </p>
+        <p class="clock"><span class="time time--high">00:00</span></p>
+        <p class="score">0</p>
+      </section>
+      <section class="target-area"></section>
+      <section class="controls">
+        <input type="text" name="wordInput" class="game-input" />
+      </section>
+    </section>
+    <script src="game.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
