@@ -9,7 +9,7 @@ class Game {
     this.clock = new Clock(2)
 
     this.MAX_TARGETS = 4
-    this.TARGET_TIMEREQUIRED = 1000
+    this.TARGET_TIMEREQUIRED = 8 // time for target to reach bottom
     this.MAX_DISTANCE = 90
     this.targetCount = 0
 
@@ -26,6 +26,10 @@ class Game {
 
     this.score = 0
     this.scoreCounter = $('.score')
+
+    this.life = 100
+    this.lifeCounter = $('.life__points')
+    this.lifeCounter.html(this.life)
 
     this.frame = 0
 
@@ -80,11 +84,13 @@ class Game {
     const id = this.targetCount++
     const word = this.getRandomWord()
     const letter = word[0]
-    this.targetArea.append(
+    const target = $(
       `<div id="${id}" class="target" data-first="${letter}">` +
         `<span class="target__text target__text--highlight"></span>` +
         `<span class="target__text">${word}</span></div>`
     )
+    target.data('step', 0)
+    this.targetArea.append(target)
   }
 
   destroyTarget() {
@@ -136,16 +142,29 @@ class Game {
       const css = target[0].style.top || '0%'
 
       let top = Number.parseInt(css.substr(0, css.length - 1))
+      const old = top
       const remaining = this.MAX_DISTANCE - top
       if (remaining <= 0) {
         // target reached bottom
+        this.setLife(this.life - target.text().length)
+        target.remove()
         return
       }
-      const step = Math.ceil(deltaTime / 1000 / this.TARGET_TIMEREQUIRED)
-      top += step
-
-      target.css({ top: `${top}%` })
+      const step =
+        target.data('step') + deltaTime / 1000 / this.TARGET_TIMEREQUIRED
+      target.data('step', step)
+      top = this.MAX_DISTANCE * step + 1.25
+      target.css({ top: `${Math.ceil(top)}%` })
     })
+  }
+
+  setLife(life) {
+    this.life = Math.max(0, life)
+    this.lifeCounter.html(this.life)
+    if (this.life === 0) {
+      this.gameOver = true
+      this.paused = true
+    }
   }
 
   setScore(score) {
