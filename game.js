@@ -20,6 +20,7 @@ class Game {
     this.gameInput = $('.game-input')
     this.gameInput.on('input', this.processTyping.bind(this))
     this.currentInput = ''
+    this.usedWords = new Set()
 
     this.frame = 0
 
@@ -35,9 +36,36 @@ class Game {
     return this.target !== null
   }
 
+  /**
+   * Gets the first jquery object that has data-first attribute set to letter
+   * @param {string} letter the letter to use when finding the target
+   */
   selectTargetFromLetter(letter) {
-    const target = this.targetArea.find(`[data-first=${letter}]`)
+    const target = this.targetArea.find(`[data-first=${letter}]`).first()
     return target.length > 0 ? target : null
+  }
+
+  getRandomWord() {
+    let word = wordsList[_randomInt()]
+    while (this.usedWords.has(word)) {
+      word = wordsList[_randomInt()]
+    }
+    this.usedWords.add(word)
+    return word
+  }
+
+  /**
+   * Appends a target to the target area
+   */
+  createTarget() {
+    const id = this.targetCount++
+    const word = this.getRandomWord()
+    const letter = word[0]
+    this.targetArea.append(
+      `<div id="${id}" class="target" data-first="${letter}">` +
+        `<span class="target__text target__target--highlight"></span>` +
+        `<span class="target__text">${word}</span></div>`
+    )
   }
 
   destroyTarget() {
@@ -48,22 +76,32 @@ class Game {
     this.currentInput = ''
   }
 
+  /**
+   * Directs user's input toward the current target
+   */
   attackTarget() {
     if (this.gameInput.val() === this.targetText) {
-      console.log('destroyed target')
+      // destroy the target if the user typed the full word
       this.setGameInput('')
       this.destroyTarget()
     } else {
+      // check the progress against the target word
       const nextInput = this.getGameInput()
       const overlap = this.targetText.slice(0, nextInput.length)
       if (overlap !== nextInput) {
+        // block user's input if it's not part of the word
         this.blockInput()
       } else {
+        // accept matching input
         this.currentInput = nextInput
       }
     }
   }
 
+  /**
+   * Updates target positions in sync with framerate
+   * @param {number} deltaTime the time in milliseconds since last frame
+   */
   updateTargetPositions(deltaTime) {
     this.targetArea.children().each((ind, el) => {
       const target = $(el)
@@ -81,6 +119,9 @@ class Game {
     })
   }
 
+  /**
+   * Prevent user input from updating by setting the gameInput value to the previous input
+   */
   blockInput() {
     this.setGameInput(this.currentInput)
   }
@@ -93,21 +134,32 @@ class Game {
     return this.gameInput.val()
   }
 
+  /**
+   * Processes the user's input
+   * @param {Event} e DOM input event
+   */
   processTyping(e) {
+    const inputString = e.target.value
+    const lastCharacter = inputString.slice(-1)
+    const isValidCharacter =
+      /[a-zA-Z]/.test(lastCharacter) || // if first character, letters are valid
+      (/['\s]/.test(lastCharacter) && inputString.length > 0) // else apostrophe and space are valid
     if (
       this.getGameInput().length < this.currentInput.length ||
       this.gameOver ||
       this.paused ||
       this.stopped ||
-      !/^[a-zA-Z]/.test(e.target.value)
+      !isValidCharacter
     ) {
+      // only allow the user to type if the game is being played and
+      // they input a valid character
       this.blockInput()
       return
     }
-    console.log(this.getGameInput().length, this.currentInput.length)
+
+    // select a new target if there isn't one
     if (!this.haveTarget()) {
-      console.log('picking target')
-      const target = this.selectTargetFromLetter(e.target.value[0])
+      const target = this.selectTargetFromLetter(inputString.slice(0, 1))
       if (target) {
         this.target = target
         this.targetText = target.children(':nth-child(2)').text()
@@ -118,9 +170,14 @@ class Game {
       }
     }
 
+    // direct user input to target
     this.attackTarget()
   }
 
+  /**
+   * Do framerate dependent update of any game logic and movement
+   * @param {number} deltaTime the time since last frame in milliseconds
+   */
   update(deltaTime) {
     // update the clock
     this.clock.addTime(0, 0, -1 * deltaTime)
@@ -131,13 +188,7 @@ class Game {
       // fill with targets
       const targets = this.targetArea.children()
       if (targets.length < this.MAX_TARGETS) {
-        const id = this.targetCount++
-        const letter = String.fromCharCode('a'.charCodeAt(0) + id)
-        this.targetArea.append(
-          `<div id="${id}" class="target" data-first="${letter}">` +
-            `<span class="target__text target__target--highlight"></span>` +
-            `<span class="target__text">${letter} target</span></div>`
-        )
+        this.createTarget()
       }
       // move targets
       this.updateTargetPositions(deltaTime)
@@ -148,6 +199,9 @@ class Game {
   start() {
     this.frame = requestAnimationFrame(this.step)
   }
+  /**
+   * Do one full simulation step of the game including input, updates, and requesting redraw
+   */
   step() {
     if (this.stopped) {
       return
@@ -165,6 +219,10 @@ class Game {
     this.stopped = true
     cancelAnimationFrame(this.frame)
   }
+}
+
+function _randomInt() {
+  return Math.floor(Math.random() * wordsList.length)
 }
 
 /**
