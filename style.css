@@ -16,8 +16,8 @@ p {
 
 .game {
   position: relative;
-  width: 520px;
-  height: 520px;
+  width: 600px;
+  height: 800px;
   margin: 0 auto;
   background-color: #535e5f;
 }
@@ -48,22 +48,36 @@ p {
   height: 70%;
   background-color: #bfdadd;
   display: flex;
-  justify-content: center;
+  flex-flow: row nowrap;
+  justify-content: space-around;
+  overflow: hidden;
 }
 
 .target {
-  width: fit-content;
-  height: fit-content;
+  width: 14rem;
+  height: 2rem;
   padding: 4px;
   margin: 2px;
   background-color: white;
   border: 2px solid #294144;
   border-radius: 25px;
-  font-size: 2rem;
+
   display: inline-flex;
-  align-items: center;
-  justify-content: center;
   position: relative;
+  pointer-events: none;
+
+  justify-content: center;
+  align-items: center;
+}
+
+.target__text {
+  text-transform: uppercase;
+  font-size: 1.6rem;
+  pointer-events: none;
+}
+
+.target__text--highlight {
+  color: #f00;
 }
 
 .controls {
@@ -79,4 +93,5 @@ p {
   height: 4rem;
   font-size: 2rem;
   text-align: center;
+  text-transform: uppercase;
 }
