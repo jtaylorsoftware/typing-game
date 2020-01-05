@@ -8,19 +8,24 @@ class Game {
     this.clockText = $('.time')
     this.clock = new Clock(2)
 
-    this.MAX_TARGETS = 5
+    this.MAX_TARGETS = 4
     this.TARGET_TIMEREQUIRED = 1000
     this.MAX_DISTANCE = 90
     this.targetCount = 0
 
     this.targetArea = $('.target-area')
     this.target = null
-    this.targetText = ''
+    this.targetText = null
+    this.targetWord = ''
 
     this.gameInput = $('.game-input')
     this.gameInput.on('input', this.processTyping.bind(this))
     this.currentInput = ''
+    this.targetHighlight = null
     this.usedWords = new Set()
+
+    this.score = 0
+    this.scoreCounter = $('.score')
 
     this.frame = 0
 
@@ -45,6 +50,20 @@ class Game {
     return target.length > 0 ? target : null
   }
 
+  selectTarget() {
+    // select a new target if there isn't one
+    const target = this.selectTargetFromLetter(this.getGameInput().slice(0, 1))
+    if (target) {
+      this.target = target
+      this.targetHighlight = target.children(':nth-child(1)').first()
+      this.targetText = target.children(':nth-child(2)').first()
+      this.targetWord = this.targetText.text()
+    } else {
+      // no target, dont display the new text
+      this.setGameInput(this.currentInput)
+    }
+  }
+
   getRandomWord() {
     let word = wordsList[_randomInt()]
     while (this.usedWords.has(word)) {
@@ -63,7 +82,7 @@ class Game {
     const letter = word[0]
     this.targetArea.append(
       `<div id="${id}" class="target" data-first="${letter}">` +
-        `<span class="target__text target__target--highlight"></span>` +
+        `<span class="target__text target__text--highlight"></span>` +
         `<span class="target__text">${word}</span></div>`
     )
   }
@@ -71,7 +90,9 @@ class Game {
   destroyTarget() {
     this.target.remove()
     this.target = null
-    this.targetText = ''
+    this.targetText = null
+    this.targetWord = ''
+    this.targetHighlight = null
     this.setGameInput('')
     this.currentInput = ''
   }
@@ -80,20 +101,27 @@ class Game {
    * Directs user's input toward the current target
    */
   attackTarget() {
-    if (this.gameInput.val() === this.targetText) {
+    if (!this.target) {
+      return
+    }
+    if (this.gameInput.val() === this.targetWord) {
       // destroy the target if the user typed the full word
       this.setGameInput('')
+      this.setScore(this.score + getCharacterLength(this.targetWord))
       this.destroyTarget()
     } else {
       // check the progress against the target word
       const nextInput = this.getGameInput()
-      const overlap = this.targetText.slice(0, nextInput.length)
+      const overlap = this.targetWord.slice(0, nextInput.length)
       if (overlap !== nextInput) {
         // block user's input if it's not part of the word
         this.blockInput()
       } else {
         // accept matching input
         this.currentInput = nextInput
+        const currentLength = this.currentInput.length
+        this.targetHighlight.html(this.targetWord.slice(0, currentLength))
+        this.targetText.html(this.targetWord.slice(currentLength))
       }
     }
   }
@@ -110,6 +138,7 @@ class Game {
       let top = Number.parseInt(css.substr(0, css.length - 1))
       const remaining = this.MAX_DISTANCE - top
       if (remaining <= 0) {
+        // target reached bottom
         return
       }
       const step = Math.ceil(deltaTime / 1000 / this.TARGET_TIMEREQUIRED)
@@ -117,6 +146,11 @@ class Game {
 
       target.css({ top: `${top}%` })
     })
+  }
+
+  setScore(score) {
+    this.score = score
+    this.scoreCounter.html(this.score)
   }
 
   /**
@@ -157,19 +191,10 @@ class Game {
       return
     }
 
-    // select a new target if there isn't one
+    // pick a target if there isn't one
     if (!this.haveTarget()) {
-      const target = this.selectTargetFromLetter(inputString.slice(0, 1))
-      if (target) {
-        this.target = target
-        this.targetText = target.children(':nth-child(2)').text()
-      } else {
-        // no target, dont display the new text
-        this.setGameInput(this.currentInput)
-        return
-      }
+      this.selectTarget()
     }
-
     // direct user input to target
     this.attackTarget()
   }
@@ -181,7 +206,7 @@ class Game {
   update(deltaTime) {
     // update the clock
     this.clock.addTime(0, 0, -1 * deltaTime)
-    this.clockText.text(this.clock.toString())
+    this.clockText.html(this.clock.toString())
 
     //------ core gameplay ------
     if (Clock.toMs(this.clock) !== 0) {
@@ -223,6 +248,10 @@ class Game {
 
 function _randomInt() {
   return Math.floor(Math.random() * wordsList.length)
+}
+
+function getCharacterLength(string) {
+  return [...string].length
 }
 
 /**
