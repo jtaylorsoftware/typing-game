@@ -16,8 +16,8 @@ p {
 
 .game {
   position: relative;
-  width: 300px;
-  height: 300px;
+  width: 520px;
+  height: 520px;
   margin: 0 auto;
   background-color: #535e5f;
 }
@@ -29,7 +29,7 @@ p {
   flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
-  font-size: 1.6rem;
+  font-size: 2rem;
   color: #fff;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
     1px 1px 0 #000;
@@ -59,7 +59,7 @@ p {
   background-color: white;
   border: 2px solid #294144;
   border-radius: 25px;
-  font-size: 1.6rem;
+  font-size: 2rem;
   display: inline-flex;
   align-items: center;
   justify-content: center;
@@ -76,26 +76,7 @@ p {
 
 .game-input {
   width: 80%;
-  height: 20%;
-  font-size: 1.6rem;
+  height: 4rem;
+  font-size: 2rem;
   text-align: center;
-}
-
-@media (min-width: 576px) {
-  .game {
-    width: 520px;
-    height: 520px;
-  }
-
-  .mode {
-    font-size: 2rem;
-  }
-
-  .game-input {
-    height: 4rem;
-    font-size: 2rem;
-  }
-  .target {
-    font-size: 2rem;
-  }
 }
