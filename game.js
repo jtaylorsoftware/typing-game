@@ -1,16 +1,47 @@
-function* range(start = 0, stop = 10, step = 1) {
-  for (let i = start; i < stop; i += step) {
-    yield i
+/**
+ * Controls Game logic and updating
+ */
+class Game {
+  constructor() {
+    this.timeCounter = new DeltaTimeCounter()
+
+    this.clockText = $('.time')
+    this.clock = new Clock(0, 10)
+
+    this.entities = []
+
+    this.targetArea = $('.target-area')
+
+    this.frame = 0
+
+    this.start = this.start.bind(this)
+    this.step = this.step.bind(this)
+  }
+  update() {
+    // step the delta counter
+    this.timeCounter.tick()
+    // update the clock
+    this.clock.addTime(0, 0, -1 * this.timeCounter.delta)
+    this.clockText.text(this.clock.toString())
+  }
+  start() {
+    this.frame = requestAnimationFrame(this.step)
+  }
+  step() {
+    // do one game simulation step
+    this.update()
+    this.frame = requestAnimationFrame(this.step)
+  }
+  stop() {
+    cancelAnimationFrame(this.frame)
   }
 }
 
-const entities = []
-let gameArea
-
-async function startGame() {
+/**
+ * Creates a Game instance and starts the game
+ */
+function startGame() {
   console.log('game playing')
-  gameArea = $('.target-area')
-  for (const i of range(0, 3)) {
-    gameArea.append(`<div class="target">i am target ${i}</div>`)
-  }
+  game = new Game()
+  game.start()
 }
