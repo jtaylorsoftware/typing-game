@@ -1,12 +1,10 @@
 $(document).ready(() => {
   main()
-    .then(() => console.log('exiting'))
-    .catch(e => console.error(e))
 })
 
-async function main() {
+function main() {
   try {
-    await startGame()
+    startGame()
   } catch (error) {
     console.error(error)
   }
