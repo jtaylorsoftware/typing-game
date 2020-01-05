@@ -44,6 +44,8 @@ class Game {
     this.target.remove()
     this.target = null
     this.targetText = ''
+    this.setGameInput('')
+    this.currentInput = ''
   }
 
   attackTarget() {
@@ -85,7 +87,6 @@ class Game {
 
   setGameInput(str) {
     this.gameInput.val(str)
-    this.currentInput = ''
   }
 
   getGameInput() {
@@ -112,7 +113,7 @@ class Game {
         this.targetText = target.children(':nth-child(2)').text()
       } else {
         // no target, dont display the new text
-        this.setGameInput(this.targetProgress)
+        this.setGameInput(this.currentInput)
         return
       }
     }
