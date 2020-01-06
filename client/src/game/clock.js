@@ -2,7 +2,7 @@
  * Encapsulates typical clock operations such as displaying the time (m,s,ms) and
  * manipulating the current time.
  */
-class Clock {
+export class Clock {
   constructor(min = 0, sec = 0, ms = 0) {
     this.min = min
     this.sec = sec

@@ -1,7 +1,7 @@
 /**
  * Stores targets in a Map where first letter of the target word are keys
  */
-class TargetMap {
+export class TargetMap {
   constructor() {
     this.map = new Map()
     this.targetSet = new Set()

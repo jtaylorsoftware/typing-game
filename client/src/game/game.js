@@ -1,7 +1,13 @@
+import { Clock } from './clock'
+import { DeltaTimeCounter } from './deltatimecounter'
+import { Target } from './target'
+import { TargetMap } from './targetmap'
+import { wordsList } from './wordslist'
+
 /**
  * Controls Game logic and updating
  */
-class Game {
+export class Game {
   constructor() {
     this.clockText = $('.time')
     this.targetArea = $('.target-area')
@@ -46,7 +52,7 @@ class Game {
 
   reset() {
     this.timeCounter = new DeltaTimeCounter()
-    this.clock.setTime(0, 10)
+    this.clock.setTime(this.GAMEPLAY_TIME)
 
     for (const target of this.targetMap) {
       target.remove()
@@ -96,9 +102,9 @@ class Game {
   }
 
   getRandomWord() {
-    let word = wordsList[_randomInt()]
+    let word = wordsList[randomInt(wordsList.length)]
     while (this.usedWords.has(word)) {
-      word = wordsList[_randomInt()]
+      word = wordsList[randomInt(wordsList.length)]
     }
     this.usedWords.add(word)
     return word
@@ -302,10 +308,6 @@ class Game {
   }
 }
 
-function _randomInt() {
-  return Math.floor(Math.random() * wordsList.length)
-}
-
-function getCharacterLength(string) {
-  return [...string].length
+function randomInt(max) {
+  return Math.floor(Math.random() * max)
 }

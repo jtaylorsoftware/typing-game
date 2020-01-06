@@ -1,7 +1,7 @@
 /**
  * Tracks elapsed time from creation.
  */
-class DeltaTimeCounter {
+export class DeltaTimeCounter {
   constructor() {
     this.current = new Date().getTime()
     this.previous = this.current

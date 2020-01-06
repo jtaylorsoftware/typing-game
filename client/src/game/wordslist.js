@@ -1,4 +1,4 @@
-const wordsList = [
+export const wordsList = [
   'the',
   'and',
   'for',
