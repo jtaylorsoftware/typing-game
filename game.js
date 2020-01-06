@@ -129,6 +129,7 @@ class Game {
     // console.log(this.targetMap[Symbol.iterator]())
     for (const target of this.targetMap) {
       if (target.removed) {
+        this.targetMap.delete(target)
       } else {
         target.update(deltaTime)
       }
