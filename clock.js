@@ -3,7 +3,7 @@
  * manipulating the current time.
  */
 class Clock {
-  constructor(min, sec = 0, ms = 0) {
+  constructor(min = 0, sec = 0, ms = 0) {
     this.min = min
     this.sec = sec
     this.ms = ms
