@@ -34,7 +34,6 @@ class Target {
   }
 
   setProgress(text) {
-    console.log(text)
     this.highlight.html(this.wordText.slice(0, text.length))
     this.word.html(this.wordText.slice(text.length))
   }
