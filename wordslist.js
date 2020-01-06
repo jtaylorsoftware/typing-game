@@ -9068,7 +9068,6 @@ const wordsList = [
   'figured',
   'orbit',
   'currencies',
-  'niger',
   'bacon',
   'survivors',
   'positioning',
