@@ -6,7 +6,7 @@ class Game {
     this.clockText = $('.time')
     this.targetArea = $('.target-area')
     this.gameInput = $('.game-input')
-    this.gameInput.on('input', this.processTyping.bind(this))
+    this.modeInfo = $('.mode__info')
 
     this.MAX_TARGETS = 4
     this.TARGET_TIMEREQUIRED = 8 // time for target to reach bottom
@@ -14,6 +14,8 @@ class Game {
 
     this.targetMap = new TargetMap()
     this.usedWords = new Set()
+
+    this.clock = new Clock()
 
     const gameArea = $('.game')
     gameArea.click(() => {
@@ -23,23 +25,26 @@ class Game {
       console.log('game focused')
       $('.game-input').focus()
     })
-    this.paused = true
     $('#playButton').click(() => {
       $('#playMenu').toggleClass('menu--hidden')
       this.start()
     })
     $('#playAgainButton').click(() => {
-      this.start()
       $('#gameOverMenu').toggleClass('menu--hidden')
+      this.start()
     })
 
+    this.gameOver = true
+    this.stopped = true
+    this.paused = true
+
+    this.gameInput.on('input', this.processTyping.bind(this))
     this.step = this.step.bind(this)
   }
 
   reset() {
     this.timeCounter = new DeltaTimeCounter()
-
-    this.clock = new Clock(2)
+    this.clock.setTime(2)
 
     for (const target of this.targetMap) {
       target.remove()
@@ -62,7 +67,6 @@ class Game {
 
     this.gameOver = false
     this.stopped = false
-    this.paused = false
   }
 
   haveTarget() {
@@ -261,6 +265,10 @@ class Game {
   }
   start() {
     this.reset()
+    $('.game-input').focus()
+    this.modeInfo.removeClass('mode__info--hidden')
+    this.gameInput.removeClass('game-input--hidden')
+    this.paused = this.gameOver = this.stopped = false
     this.frame = requestAnimationFrame(this.step)
   }
   /**
