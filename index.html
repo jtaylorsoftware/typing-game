@@ -15,28 +15,31 @@
   <body>
     <section class="game">
       <section class="mode">
-        <section class="mode__info mode__info--hidden">
+        <div class="mode__info mode__info--hidden">
           <p class="life">
             Life: <span class="life__points life__points--healthy">0</span>
           </p>
           <p class="clock"><span class="time time--high">00:00:000</span></p>
           <p class="score">0</p>
-        </section>
+        </div>
       </section>
       <section class="gameplay">
         <section id="playMenu" class="menu">
-          <h1 class="menu__heading">Type Attack</h1>
-          <section class="menu__options">
+          <h1 class="menu__heading menu__heading--large">Type Attack</h1>
+          <div class="menu__options">
             <button id="playButton" class="menu__button">Play</button>
-          </section>
+          </div>
         </section>
         <section id="gameOverMenu" class="menu menu--hidden">
-          <h1 class="menu__heading">Game Over</h1>
-          <section class="menu__options">
+          <h1 class="menu__heading menu__heading--large">Game Over</h1>
+          <h2 class="menu__heading menu__heading--medium">
+            Final score: <span id="menuScore">0</span>
+          </h2>
+          <div class="menu__options">
             <button id="playAgainButton" class="menu__button">
               Play Again
             </button>
-          </section>
+          </div>
         </section>
         <section class="target-area"></section>
       </section>
