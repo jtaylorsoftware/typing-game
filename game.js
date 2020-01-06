@@ -9,8 +9,10 @@ class Game {
     this.modeInfo = $('.mode__info')
 
     this.MAX_TARGETS = 4
-    this.TARGET_TIMEREQUIRED = 8 // time for target to reach bottom
+    this.TARGET_TIMEREQUIRED = 8 // time for target to reach bottom in seconds
     this.TARGET_GOAL = 90
+
+    this.GAMEPLAY_TIME = 1 // minutes
 
     this.targetMap = new TargetMap()
     this.usedWords = new Set()
@@ -44,7 +46,7 @@ class Game {
 
   reset() {
     this.timeCounter = new DeltaTimeCounter()
-    this.clock.setTime(2)
+    this.clock.setTime(0, 10)
 
     for (const target of this.targetMap) {
       target.remove()
@@ -167,13 +169,19 @@ class Game {
     }
   }
 
+  onGameOver() {
+    this.gameOver = true
+    this.paused = true
+    this.modeInfo.addClass('mode__info--hidden')
+    $('#menuScore').html(this.score)
+    $('#gameOverMenu').toggleClass('menu--hidden')
+  }
+
   setLife(life) {
     this.life = Math.max(0, life)
     this.lifeCounter.html(this.life)
     if (this.life === 0) {
-      this.gameOver = true
-      this.paused = true
-      $('#gameOverMenu').toggleClass('menu--hidden')
+      this.onGameOver()
     }
   }
 
@@ -260,7 +268,8 @@ class Game {
       // move targets
       this.updateTargets(deltaTime)
     } else {
-      this.stop()
+      this.onGameOver()
+      // this.stop()
     }
   }
   start() {
