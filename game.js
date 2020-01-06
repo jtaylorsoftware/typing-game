@@ -10,18 +10,15 @@ class Game {
 
     this.MAX_TARGETS = 4
     this.TARGET_TIMEREQUIRED = 8 // time for target to reach bottom
-    this.MAX_DISTANCE = 90
-    this.targetCount = 0
+    this.TARGET_GOAL = 90
 
     this.targetArea = $('.target-area')
+    this.targetMap = new TargetMap()
     this.target = null
-    this.targetText = null
-    this.targetWord = ''
 
     this.gameInput = $('.game-input')
     this.gameInput.on('input', this.processTyping.bind(this))
     this.currentInput = ''
-    this.targetHighlight = null
     this.usedWords = new Set()
 
     this.score = 0
@@ -50,8 +47,8 @@ class Game {
    * @param {string} letter the letter to use when finding the target
    */
   selectTargetFromLetter(letter) {
-    const target = this.targetArea.find(`[data-first=${letter}]`).first()
-    return target.length > 0 ? target : null
+    const targetsWithLetter = this.targetMap.get(letter)
+    return targetsWithLetter ? targetsWithLetter[0] : null
   }
 
   selectTarget() {
@@ -59,9 +56,6 @@ class Game {
     const target = this.selectTargetFromLetter(this.getGameInput().slice(0, 1))
     if (target) {
       this.target = target
-      this.targetHighlight = target.children(':nth-child(1)').first()
-      this.targetText = target.children(':nth-child(2)').first()
-      this.targetWord = this.targetText.text()
     } else {
       // no target, dont display the new text
       this.setGameInput(this.currentInput)
@@ -81,26 +75,23 @@ class Game {
    * Appends a target to the target area
    */
   createTarget() {
-    const id = this.targetCount++
     const word = this.getRandomWord()
-    const letter = word[0]
-    const target = $(
-      `<div id="${id}" class="target" data-first="${letter}">` +
-        `<span class="target__text target__text--highlight"></span>` +
-        `<span class="target__text">${word}</span></div>`
+
+    const target = new Target(
+      word,
+      0,
+      this.TARGET_GOAL,
+      this.TARGET_TIMEREQUIRED
     )
-    target.data('step', 0)
-    this.targetArea.append(target)
+    this.targetArea.append(target.root)
+    target.onGoalReached = this.targetReachedGoal.bind(this)
+    this.targetMap.set(word[0], target)
   }
 
   destroyTarget() {
+    this.targetMap.delete(this.target)
     this.target.remove()
     this.target = null
-    this.targetText = null
-    this.targetWord = ''
-    this.targetHighlight = null
-    this.setGameInput('')
-    this.currentInput = ''
   }
 
   /**
@@ -110,24 +101,22 @@ class Game {
     if (!this.target) {
       return
     }
-    if (this.gameInput.val() === this.targetWord) {
+    const targetText = this.target.getText()
+    if (this.gameInput.val() === targetText) {
       // destroy the target if the user typed the full word
-      this.setGameInput('')
-      this.setScore(this.score + getCharacterLength(this.targetWord))
+      this.clearInput()
+      this.setScore(this.score + targetText.length)
       this.destroyTarget()
     } else {
       // check the progress against the target word
       const nextInput = this.getGameInput()
-      const overlap = this.targetWord.slice(0, nextInput.length)
-      if (overlap !== nextInput) {
+      if (!targetText.startsWith(nextInput)) {
         // block user's input if it's not part of the word
         this.blockInput()
       } else {
         // accept matching input
         this.currentInput = nextInput
-        const currentLength = this.currentInput.length
-        this.targetHighlight.html(this.targetWord.slice(0, currentLength))
-        this.targetText.html(this.targetWord.slice(currentLength))
+        this.target.setProgress(this.currentInput)
       }
     }
   }
@@ -136,26 +125,14 @@ class Game {
    * Updates target positions in sync with framerate
    * @param {number} deltaTime the time in milliseconds since last frame
    */
-  updateTargetPositions(deltaTime) {
-    this.targetArea.children().each((ind, el) => {
-      const target = $(el)
-      const css = target[0].style.top || '0%'
-
-      let top = Number.parseInt(css.substr(0, css.length - 1))
-      const old = top
-      const remaining = this.MAX_DISTANCE - top
-      if (remaining <= 0) {
-        // target reached bottom
-        this.setLife(this.life - target.text().length)
-        target.remove()
-        return
+  updateTargets(deltaTime) {
+    // console.log(this.targetMap[Symbol.iterator]())
+    for (const target of this.targetMap) {
+      if (target.removed) {
+      } else {
+        target.update(deltaTime)
       }
-      const step =
-        target.data('step') + deltaTime / 1000 / this.TARGET_TIMEREQUIRED
-      target.data('step', step)
-      top = this.MAX_DISTANCE * step + 1.25
-      target.css({ top: `${Math.ceil(top)}%` })
-    })
+    }
   }
 
   setLife(life) {
@@ -164,6 +141,14 @@ class Game {
     if (this.life === 0) {
       this.gameOver = true
       this.paused = true
+    }
+  }
+
+  targetReachedGoal(word) {
+    this.setLife(this.life - word.length)
+    if (word.startsWith(this.currentInput)) {
+      this.target = null
+      this.clearInput()
     }
   }
 
@@ -185,6 +170,11 @@ class Game {
 
   getGameInput() {
     return this.gameInput.val()
+  }
+
+  clearInput() {
+    this.setGameInput('')
+    this.currentInput = ''
   }
 
   /**
@@ -235,7 +225,7 @@ class Game {
         this.createTarget()
       }
       // move targets
-      this.updateTargetPositions(deltaTime)
+      this.updateTargets(deltaTime)
     } else {
       this.stop()
     }
