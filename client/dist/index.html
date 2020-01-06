@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta http-equiv="X-UA-Compatible" content="ie=edge" />
+    <title>Typing Game</title>
+    <script
+      src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
+      integrity="sha256-pasqAKBDmFT4eHoN2ndd6lN370kFiGUFyTiUHWhU7k8="
+      crossorigin="anonymous"
+    ></script>
+    <link href="style.css" rel="stylesheet" />
+  </head>
+  <body>
+    <section class="game">
+      <section class="mode">
+        <div class="mode__info mode__info--hidden">
+          <p class="life">
+            Life: <span class="life__points life__points--healthy">0</span>
+          </p>
+          <p class="clock"><span class="time time--high">00:00:000</span></p>
+          <p class="score">0</p>
+        </div>
+      </section>
+      <section class="gameplay">
+        <section id="playMenu" class="menu">
+          <h1 class="menu__heading menu__heading--large">Type Attack</h1>
+          <div class="menu__options">
+            <button id="playButton" class="menu__button">Play</button>
+          </div>
+        </section>
+        <section id="gameOverMenu" class="menu menu--hidden">
+          <h1 class="menu__heading menu__heading--large">Game Over</h1>
+          <h2 class="menu__heading menu__heading--medium">
+            Final score: <span id="menuScore">0</span>
+          </h2>
+          <div class="menu__options">
+            <button id="playAgainButton" class="menu__button">
+              Play Again
+            </button>
+          </div>
+        </section>
+        <section class="target-area"></section>
+      </section>
+      <section class="controls">
+        <input
+          type="text"
+          name="wordInput"
+          class="game-input game-input--hidden"
+          spellcheck="false"
+        />
+      </section>
+    </section>
+    <script src="wordslist.js"></script>
+    <script src="clock.js"></script>
+    <script src="deltatimecounter.js"></script>
+    <script src="target.js"></script>
+    <script src="targetmap.js"></script>
+    <script src="game.js"></script>
+    <script src="main.js"></script>
+  </body>
+</html>
