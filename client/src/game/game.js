@@ -280,9 +280,9 @@ export class Game {
   }
   start() {
     this.reset()
-    $('.game-input').focus()
     this.modeInfo.removeClass('mode__info--hidden')
     this.gameInput.removeClass('game-input--hidden')
+    $('.game-input').focus()
     this.paused = this.gameOver = this.stopped = false
     this.frame = requestAnimationFrame(this.step)
   }
