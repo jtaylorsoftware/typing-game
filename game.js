@@ -3,23 +3,53 @@
  */
 class Game {
   constructor() {
-    this.timeCounter = new DeltaTimeCounter()
-
     this.clockText = $('.time')
-    this.clock = new Clock(2)
+    this.targetArea = $('.target-area')
+    this.gameInput = $('.game-input')
+    this.gameInput.on('input', this.processTyping.bind(this))
 
     this.MAX_TARGETS = 4
     this.TARGET_TIMEREQUIRED = 8 // time for target to reach bottom
     this.TARGET_GOAL = 90
 
-    this.targetArea = $('.target-area')
     this.targetMap = new TargetMap()
+    this.usedWords = new Set()
+
+    const gameArea = $('.game')
+    gameArea.click(() => {
+      gameArea.focus()
+    })
+    gameArea.focus(() => {
+      console.log('game focused')
+      $('.game-input').focus()
+    })
+    this.paused = true
+    $('#playButton').click(() => {
+      $('#playMenu').toggleClass('menu--hidden')
+      this.start()
+    })
+    $('#playAgainButton').click(() => {
+      this.start()
+      $('#gameOverMenu').toggleClass('menu--hidden')
+    })
+
+    this.step = this.step.bind(this)
+  }
+
+  reset() {
+    this.timeCounter = new DeltaTimeCounter()
+
+    this.clock = new Clock(2)
+
+    for (const target of this.targetMap) {
+      target.remove()
+    }
+    this.targetMap.clear()
+    this.usedWords.clear()
+
     this.target = null
 
-    this.gameInput = $('.game-input')
-    this.gameInput.on('input', this.processTyping.bind(this))
-    this.currentInput = ''
-    this.usedWords = new Set()
+    this.clearInput()
 
     this.score = 0
     this.scoreCounter = $('.score')
@@ -33,9 +63,6 @@ class Game {
     this.gameOver = false
     this.stopped = false
     this.paused = false
-
-    this.start = this.start.bind(this)
-    this.step = this.step.bind(this)
   }
 
   haveTarget() {
@@ -142,6 +169,7 @@ class Game {
     if (this.life === 0) {
       this.gameOver = true
       this.paused = true
+      $('#gameOverMenu').toggleClass('menu--hidden')
     }
   }
 
@@ -232,6 +260,7 @@ class Game {
     }
   }
   start() {
+    this.reset()
     this.frame = requestAnimationFrame(this.step)
   }
   /**
@@ -262,13 +291,4 @@ function _randomInt() {
 
 function getCharacterLength(string) {
   return [...string].length
-}
-
-/**
- * Creates a Game instance and starts the game
- */
-function startGame() {
-  console.log('game playing')
-  game = new Game()
-  game.start()
 }
