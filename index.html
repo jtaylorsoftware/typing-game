@@ -15,11 +15,13 @@
   <body>
     <section class="game">
       <section class="mode">
-        <p class="life">
-          Life: <span class="life__points life__points--healthy">0</span>
-        </p>
-        <p class="clock"><span class="time time--high">00:00:000</span></p>
-        <p class="score">0</p>
+        <section class="mode__info mode__info--hidden">
+          <p class="life">
+            Life: <span class="life__points life__points--healthy">0</span>
+          </p>
+          <p class="clock"><span class="time time--high">00:00:000</span></p>
+          <p class="score">0</p>
+        </section>
       </section>
       <section class="gameplay">
         <section id="playMenu" class="menu">
@@ -42,7 +44,7 @@
         <input
           type="text"
           name="wordInput"
-          class="game-input"
+          class="game-input game-input--hidden"
           spellcheck="false"
         />
       </section>
