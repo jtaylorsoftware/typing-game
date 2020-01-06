@@ -21,7 +21,23 @@
         <p class="clock"><span class="time time--high">00:00:000</span></p>
         <p class="score">0</p>
       </section>
-      <section class="target-area"></section>
+      <section class="gameplay">
+        <section class="menu">
+          <h1 class="menu__heading">Type Attack</h1>
+          <section class="menu__options">
+            <button id="playButton" class="menu__button">Play</button>
+          </section>
+        </section>
+        <section class="menu menu--hidden">
+          <h1 class="menu__heading">Game Over</h1>
+          <section class="menu__options">
+            <button id="playAgainButton" class="menu__button">
+              Play Again
+            </button>
+          </section>
+        </section>
+        <section class="target-area"></section>
+      </section>
       <section class="controls">
         <input
           type="text"
