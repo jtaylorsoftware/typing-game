@@ -3,16 +3,8 @@ $(document).ready(() => {
 })
 
 function main() {
-  const gameArea = $('.game')
-  gameArea.click(() => {
-    gameArea.focus()
-  })
-  gameArea.focus(() => {
-    console.log('game focused')
-    $('.game-input').focus()
-  })
   try {
-    startGame()
+    const game = new Game()
   } catch (error) {
     console.error(error)
   }
