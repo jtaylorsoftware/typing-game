@@ -37,6 +37,11 @@ class TargetMap {
     return false
   }
 
+  clear() {
+    this.map.clear()
+    this.targetSet.clear()
+  }
+
   get size() {
     return this.map.size
   }
