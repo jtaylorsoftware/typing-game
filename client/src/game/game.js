@@ -2,7 +2,6 @@ import { Clock } from './clock'
 import { DeltaTimeCounter } from './deltatimecounter'
 import { Target } from './target'
 import { TargetMap } from './targetmap'
-import { wordsList } from './wordslist'
 
 /**
  * Controls Game logic and updating
@@ -15,13 +14,13 @@ export class Game {
     this.modeInfo = $('.mode__info')
 
     this.MAX_TARGETS = 4
-    this.TARGET_TIMEREQUIRED = 8 // time for target to reach bottom in seconds
+    this.MIN_TIMEREQUIRED = 4 // time for target to reach bottom in seconds
     this.TARGET_GOAL = 90
 
     this.GAMEPLAY_TIME = 1 // minutes
 
     this.targetMap = new TargetMap()
-    this.usedWords = new Set()
+    this.wordCache = new Set()
 
     this.clock = new Clock()
 
@@ -50,15 +49,20 @@ export class Game {
     this.step = this.step.bind(this)
   }
 
-  reset() {
+  async reset() {
     this.timeCounter = new DeltaTimeCounter()
     this.clock.setTime(this.GAMEPLAY_TIME)
 
     for (const target of this.targetMap) {
       target.remove()
     }
+    this.numTargets = 0
     this.targetMap.clear()
-    this.usedWords.clear()
+    this.wordCache.clear()
+    await this.getRandomWords(100)
+    if (this.wordCache.size === 0) {
+      throw Error('Could not reach server')
+    }
 
     this.target = null
 
@@ -101,36 +105,55 @@ export class Game {
     }
   }
 
-  getRandomWord() {
-    let word = wordsList[randomInt(wordsList.length)]
-    while (this.usedWords.has(word)) {
-      word = wordsList[randomInt(wordsList.length)]
+  async getRandomWords(count) {
+    try {
+      const res = await fetch(`/api/word?count=${count}`)
+      const data = await res.json()
+      data.forEach(w => this.wordCache.add(w))
+    } catch (error) {
+      console.error(error)
     }
-    this.usedWords.add(word)
-    return word
+  }
+
+  async getWordFromCache() {
+    if (this.wordCache.size <= 20) {
+      await this.getRandomWords(100)
+    }
+    const next = this.wordCache.values().next().value
+    this.wordCache.delete(next)
+    return next
   }
 
   /**
    * Appends a target to the target area
    */
-  createTarget() {
-    const word = this.getRandomWord()
+  async createTarget() {
+    console.log('create target')
+    try {
+      const word = await this.getWordFromCache()
 
-    const target = new Target(
-      word,
-      0,
-      this.TARGET_GOAL,
-      this.TARGET_TIMEREQUIRED
-    )
-    this.targetArea.append(target.root)
-    target.onGoalReached = this.targetReachedGoal.bind(this)
-    this.targetMap.set(word[0], target)
+      const target = new Target(
+        word,
+        0,
+        this.TARGET_GOAL,
+        Math.max(
+          this.MIN_TIMEREQUIRED,
+          randomInt(this.MIN_TIMEREQUIRED * word.length)
+        )
+      )
+      this.targetArea.append(target.root)
+      target.onGoalReached = this.targetReachedGoal.bind(this)
+      this.targetMap.set(word[0], target)
+    } catch (error) {
+      console.log(error)
+    }
   }
 
   destroyTarget() {
     this.targetMap.delete(this.target)
     this.target.remove()
     this.target = null
+    this.numTargets -= 1
   }
 
   /**
@@ -192,6 +215,7 @@ export class Game {
   }
 
   targetReachedGoal(word) {
+    this.numTargets -= 1
     this.setLife(this.life - word.length)
     if (word.startsWith(this.currentInput)) {
       this.target = null
@@ -267,9 +291,9 @@ export class Game {
     //------ core gameplay ------
     if (Clock.toMs(this.clock) !== 0) {
       // fill with targets
-      const targets = this.targetArea.children()
-      if (targets.length < this.MAX_TARGETS) {
-        this.createTarget()
+      if (this.numTargets < this.MAX_TARGETS) {
+        this.numTargets += 1
+        this.createTarget().catch(err => console.error(err))
       }
       // move targets
       this.updateTargets(deltaTime)
@@ -280,11 +304,14 @@ export class Game {
   }
   start() {
     this.reset()
-    this.modeInfo.removeClass('mode__info--hidden')
-    this.gameInput.removeClass('game-input--hidden')
-    $('.game-input').focus()
-    this.paused = this.gameOver = this.stopped = false
-    this.frame = requestAnimationFrame(this.step)
+      .then(() => {
+        this.modeInfo.removeClass('mode__info--hidden')
+        this.gameInput.removeClass('game-input--hidden')
+        $('.game-input').focus()
+        this.paused = this.gameOver = this.stopped = false
+        this.frame = requestAnimationFrame(this.step)
+      })
+      .catch(error => console.log(error))
   }
   /**
    * Do one full simulation step of the game including input, updates, and requesting redraw
