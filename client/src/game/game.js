@@ -90,13 +90,19 @@ export class Game {
    * @param {string} letter the letter to use when finding the target
    */
   selectTargetFromLetter(letter) {
+    console.log(letter)
     const targetsWithLetter = this.targetMap.get(letter)
     return targetsWithLetter ? targetsWithLetter[0] : null
   }
 
   selectTarget() {
     // select a new target if there isn't one
-    const target = this.selectTargetFromLetter(this.getGameInput().slice(0, 1))
+    const target = this.selectTargetFromLetter(
+      this.getGameInput()
+        .slice(0, 1)
+        .toLowerCase()
+    )
+    // console.log(target)
     if (target) {
       this.target = target
     } else {
@@ -164,14 +170,15 @@ export class Game {
       return
     }
     const targetText = this.target.getText()
-    if (this.gameInput.val() === targetText) {
-      // destroy the target if the user typed the full word
+    const gameInputText = this.getGameInput().toLowerCase()
+    if (gameInputText === targetText) {
+      // destroy the target if the user finished typing the target word
       this.clearInput()
       this.setScore(this.score + targetText.length)
       this.destroyTarget()
     } else {
       // check the progress against the target word
-      const nextInput = this.getGameInput()
+      const nextInput = this.getGameInput().toLowerCase()
       if (!targetText.startsWith(nextInput)) {
         // block user's input if it's not part of the word
         this.blockInput()
@@ -259,6 +266,7 @@ export class Game {
     const isValidCharacter =
       /[a-zA-Z]/.test(lastCharacter) || // if first character, letters are valid
       (/['\s]/.test(lastCharacter) && inputString.length > 0) // else apostrophe and space are valid
+    // console.log(isValidCharacter)
     if (
       this.getGameInput().length < this.currentInput.length ||
       this.gameOver ||
@@ -268,6 +276,7 @@ export class Game {
     ) {
       // only allow the user to type if the game is being played and
       // they input a valid character
+      // console.log('blocking input in processTyping')
       this.blockInput()
       return
     }
