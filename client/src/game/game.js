@@ -202,6 +202,7 @@ export class Game {
     this.gameOver = true
     this.paused = true
     this.modeInfo.addClass('mode__info--hidden')
+    this.gameInput.addClass('game-input--hidden')
     $('#menuScore').html(this.score)
     $('#gameOverMenu').toggleClass('menu--hidden')
   }
