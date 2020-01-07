@@ -29,7 +29,7 @@ export class Game {
       gameArea.focus()
     })
     gameArea.focus(() => {
-      console.log('game focused')
+      // console.log('game focused')
       $('.game-input').focus()
     })
     $('#playButton').click(() => {
@@ -128,7 +128,7 @@ export class Game {
    * Appends a target to the target area
    */
   async createTarget() {
-    console.log('create target')
+    // console.log('create target')
     try {
       const word = await this.getWordFromCache()
 
@@ -330,7 +330,7 @@ export class Game {
     this.frame = requestAnimationFrame(this.step)
   }
   stop() {
-    console.log('stopping')
+    // console.log('stopping')
     this.stopped = true
     cancelAnimationFrame(this.frame)
   }
