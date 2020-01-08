@@ -3,7 +3,7 @@ const { check, query, validationResult } = require('express-validator')
 const path = require('path')
 const helmet = require('helmet')
 
-const { wordsList } = require('./wordslist')
+const { wordList } = require('./wordlist')
 
 if (process.env.NODE_ENV !== 'production') {
   require('dotenv').config()
@@ -28,7 +28,7 @@ app.get(
     }
     const count = Number.parseInt(req.query.count)
     const indices = randomIndices(count)
-    const words = indices.map(i => wordsList[i])
+    const words = indices.map(i => wordList[i])
     res.json(words)
   }
 )
@@ -43,7 +43,7 @@ app.listen(process.env.PORT, () =>
 )
 
 function randomIndices(count) {
-  return Array.from({ length: count }, () => randomInt(wordsList.length))
+  return Array.from({ length: count }, () => randomInt(wordList.length))
 }
 
 function randomInt(max) {
