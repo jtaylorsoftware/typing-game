@@ -25,6 +25,13 @@ export class Game {
     this.clock = new Clock()
 
     const gameArea = $('.game')
+    gameArea.keydown(e => {
+      if (e.which === 27) {
+        // escape
+        $('#pauseMenu').toggleClass('menu--hidden')
+        this.paused = !this.paused
+      }
+    })
     gameArea.click(() => {
       gameArea.focus()
     })
@@ -87,7 +94,7 @@ export class Game {
    * @param {string} letter the letter to use when finding the target
    */
   selectTargetFromLetter(letter) {
-    console.log(letter)
+    // console.log(letter)
     const targetWithLetter = this.targetMap.get(letter)
     return targetWithLetter
   }
@@ -112,7 +119,7 @@ export class Game {
     try {
       const res = await fetch(`/api/word?count=${count}`)
       const data = await res.json()
-      data.forEach(w => this.wordCache.add(w))
+      data.forEach(w => this.wordCache.add(w.toLowerCase()))
     } catch (error) {
       console.error(error)
     }
