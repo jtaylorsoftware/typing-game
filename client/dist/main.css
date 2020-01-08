@@ -1,13 +1,20 @@
-body,
 html {
-  padding: 0;
-  margin: 0;
+  height: 100vh;
   font-size: 10px;
-  font-family: Arial, Helvetica, sans-serif;
+  font-family: 'Orbitron', Arial, Helvetica, sans-serif;
 }
 
 body {
-  height: 100vh;
+  height: 100%;
+  margin: 0;
+  padding: 0;
+  background-color: #000;
+}
+
+input,
+button {
+  font-family: inherit;
+  outline: none;
 }
 
 p,
@@ -17,12 +24,21 @@ h2 {
   padding: 0;
 }
 
+.container {
+  height: 100%;
+  display: flex;
+  flex-flow: column nowrap;
+  justify-content: center;
+  align-items: center;
+}
+
 .game {
   position: relative;
-  width: 600px;
-  height: 800px;
+  width: 90rem;
+  height: 80rem;
   margin: 0 auto;
-  background-color: #535e5f;
+  vertical-align: middle;
+  border: 2px solid #ffffe2;
 }
 
 .mode {
@@ -34,7 +50,6 @@ h2 {
 .mode__info {
   width: 100%;
   height: 100%;
-  color: #fff;
   text-shadow: -1px -1px 0 #000, 1px -1px 0 #000, -1px 1px 0 #000,
     1px 1px 0 #000;
   text-align: center;
@@ -105,7 +120,7 @@ h2 {
 
 .menu__button {
   width: fit-content;
-  height: 5rem;
+  height: fit-content;
   margin-bottom: 2rem;
   border: 1px solid rgba(0, 0, 0, 0.4);
   border-radius: 5px;
@@ -114,7 +129,7 @@ h2 {
   color: #fff;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.4), 1px -1px 0 rgba(0, 0, 0, 0.4),
     -1px 1px 0 rgba(0, 0, 0, 0.4), 1px 1px 0 rgba(0, 0, 0, 0.4);
-  font-size: 4rem;
+  font-size: 3.6rem;
 }
 
 .menu__button:focus,
@@ -130,7 +145,6 @@ h2 {
 .target-area {
   width: 100%;
   height: 100%;
-  background-color: #bfdadd;
   display: flex;
   flex-flow: row nowrap;
   justify-content: space-around;
@@ -138,30 +152,15 @@ h2 {
 }
 
 .target {
-  width: 14rem;
-  height: 2rem;
-  padding: 4px;
-  margin: 2px;
-  background-color: white;
-  border: 2px solid #294144;
-  border-radius: 25px;
+  position: relative;
+  pointer-events: none;
 
   display: inline-flex;
-  position: relative;
+  flex-flow: column nowrap;
   pointer-events: none;
 
   justify-content: center;
   align-items: center;
-}
-
-.target__text {
-  text-transform: uppercase;
-  font-size: 1.6rem;
-  pointer-events: none;
-}
-
-.target__text--highlight {
-  color: #f00;
 }
 
 .controls {

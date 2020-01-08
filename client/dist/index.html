@@ -5,8 +5,12 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <meta http-equiv="X-UA-Compatible" content="ie=edge" />
     <title>Typing Game</title>
-
-    <link href="style.css" rel="stylesheet" />
+    <link
+      href="https://fonts.googleapis.com/css?family=Orbitron&display=swap"
+      rel="stylesheet"
+    />
+    <link href="main.css" rel="stylesheet" />
+    <link href="ships.css" rel="stylesheet" />
 
     <script
       src="https://code.jquery.com/jquery-3.4.1.slim.min.js"
@@ -17,43 +21,45 @@
     <script src="main.js" defer></script>
   </head>
   <body>
-    <section class="game">
-      <section class="mode">
-        <div class="mode__info mode__info--hidden">
-          <p class="life">
-            Life: <span class="life__points life__points--healthy">0</span>
-          </p>
-          <p class="clock"><span class="time time--high">00:00:000</span></p>
-          <p class="score">0</p>
-        </div>
-      </section>
-      <section class="gameplay">
-        <section id="playMenu" class="menu">
-          <h1 class="menu__heading menu__heading--large">Type Attack</h1>
-          <div class="menu__options">
-            <button id="playButton" class="menu__button">Play</button>
+    <section class="container">
+      <section class="game space">
+        <section class="mode hud">
+          <div class="mode__info mode__info--hidden">
+            <p class="life">
+              Life: <span class="life__points life__points--healthy">0</span>
+            </p>
+            <p class="clock"><span class="time time--high">00:00:000</span></p>
+            <p class="score">0</p>
           </div>
         </section>
-        <section id="gameOverMenu" class="menu menu--hidden">
-          <h1 class="menu__heading menu__heading--large">Game Over</h1>
-          <h2 class="menu__heading menu__heading--medium">
-            Final score: <span id="menuScore">0</span>
-          </h2>
-          <div class="menu__options">
-            <button id="playAgainButton" class="menu__button">
-              Play Again
-            </button>
-          </div>
+        <section class="gameplay">
+          <section id="playMenu" class="menu">
+            <h1 class="menu__heading menu__heading--large">Type Attack</h1>
+            <div class="menu__options">
+              <button id="playButton" class="menu__button">Play</button>
+            </div>
+          </section>
+          <section id="gameOverMenu" class="menu menu--hidden">
+            <h1 class="menu__heading menu__heading--large">Game Over</h1>
+            <h2 class="menu__heading menu__heading--medium">
+              Final score: <span id="menuScore">0</span>
+            </h2>
+            <div class="menu__options">
+              <button id="playAgainButton" class="menu__button">
+                Play Again
+              </button>
+            </div>
+          </section>
+          <section class="target-area"></section>
         </section>
-        <section class="target-area"></section>
-      </section>
-      <section class="controls">
-        <input
-          type="text"
-          name="wordInput"
-          class="game-input game-input--hidden"
-          spellcheck="false"
-        />
+        <section class="controls">
+          <input
+            type="text"
+            name="wordInput"
+            class="game-input game-input--hidden console"
+            spellcheck="false"
+          />
+        </section>
       </section>
     </section>
   </body>
