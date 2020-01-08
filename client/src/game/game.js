@@ -53,9 +53,6 @@ export class Game {
     this.timeCounter = new DeltaTimeCounter()
     this.clock.setTime(this.GAMEPLAY_TIME)
 
-    for (const target of this.targetMap) {
-      target.remove()
-    }
     this.numTargets = 0
     this.targetMap.clear()
     this.wordCache.clear()
@@ -91,8 +88,8 @@ export class Game {
    */
   selectTargetFromLetter(letter) {
     console.log(letter)
-    const targetsWithLetter = this.targetMap.get(letter)
-    return targetsWithLetter ? targetsWithLetter[0] : null
+    const targetWithLetter = this.targetMap.get(letter)
+    return targetWithLetter
   }
 
   selectTarget() {
@@ -136,7 +133,10 @@ export class Game {
   async createTarget() {
     // console.log('create target')
     try {
-      const word = await this.getWordFromCache()
+      let word = await this.getWordFromCache()
+      while (this.targetMap.has(word[0])) {
+        word = await this.getWordFromCache()
+      }
 
       const target = new Target(
         word,
@@ -196,7 +196,7 @@ export class Game {
    */
   updateTargets(deltaTime) {
     // console.log(this.targetMap[Symbol.iterator]())
-    for (const target of this.targetMap) {
+    for (const target of this.targetMap.values()) {
       if (target.removed) {
         this.targetMap.delete(target)
       } else {
