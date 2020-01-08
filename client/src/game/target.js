@@ -11,12 +11,23 @@ export class Target {
    */
   constructor(word, start, goal, timeToReach) {
     this.root = $(
-      `<div id="${Target.id++}" class="target" data-first="${word[0]}">` +
-        `<span class="target__text target__text--highlight"></span>` +
-        `<span class="target__text">${word}</span></div>`
+      `<div id="${Target.id++}" class="target ship" data-first="${word[0]}"
+        style="{ top: "${start}%" }>
+        <div class="ship__cockpit"></div>
+        <div class="ship__body">
+        <div class="ship__console">
+          <span class="ship__text ship__text--highlight"></span>
+          <span class="ship__text">${word}</span>
+        </div>
+        </div>
+        <div class="ship__engine">
+          <div class="ship__thruster"></div>
+          <div class="ship__thruster"></div>
+          <div class="ship__thruster"></div>
+      </div>`
     )
-    this.highlight = this.root.children(':nth-child(1)').first()
-    this.word = this.root.children(':nth-child(2)').first()
+    this.highlight = this.root.find('.ship__text--highlight').first()
+    this.word = this.root.find('.ship__text--highlight + .ship__text').first()
     this.wordText = word
     this.start = start
     this.goal = goal
