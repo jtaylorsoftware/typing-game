@@ -8317,8 +8317,6 @@ exports.wordsList = [
   'pierce',
   'allan',
   'dressing',
-  'techrepublic',
-  'sperm',
   'bald',
   'filme',
   'craps',
