@@ -69,7 +69,8 @@ export class Game {
     }
 
     this.target = null
-
+    this.freeColumns = Array.from({ length: 4 }, (v, i) => i + 1)
+    console.log(this.freeColumns)
     this.clearInput()
 
     this.score = 0
@@ -145,9 +146,10 @@ export class Game {
       while (this.targetMap.has(word[0])) {
         word = await this.getWordFromCache()
       }
-
+      const column = this.freeColumns.shift()
       const target = new Target(
         word,
+        column,
         0,
         this.TARGET_GOAL,
         Math.max(
@@ -165,6 +167,7 @@ export class Game {
 
   destroyTarget() {
     this.targetMap.delete(this.target)
+    this.freeColumns.push(this.target.column)
     this.target.remove()
     this.target = null
     this.numTargets -= 1
@@ -230,8 +233,11 @@ export class Game {
     }
   }
 
-  targetReachedGoal(word) {
+  targetReachedGoal(target) {
+    const word = target.getText()
+    console.log(target, word)
     this.numTargets -= 1
+    this.freeColumns.push(target.column)
     this.setLife(this.life - word.length)
     if (word.startsWith(this.currentInput)) {
       this.target = null
