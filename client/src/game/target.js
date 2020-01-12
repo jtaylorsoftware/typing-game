@@ -5,14 +5,15 @@ export class Target {
   /**
    *
    * @param {jquery} root The root jquery element for the target
+   * @param {number} column The column of the target grid area to be placed in
    * @param {number} start The starting value of css "top"
    * @param {number} goal The value of css "top" to reach - the "goal"
    * @param {number} timeToReach The time required to reach the goal (seconds)
    */
-  constructor(word, start, goal, timeToReach) {
+  constructor(word, column, start, goal, timeToReach) {
     this.root = $(
       `<div id="${Target.id++}" class="target ship" data-first="${word[0]}"
-        style="{ top: "${start}%" }>
+        style="top: ${start}%; grid-column-start: ${column}; grid-row-start: 1;">
         <div class="ship__cockpit"></div>
         <div class="ship__body">
         <div class="ship__console">
@@ -30,6 +31,7 @@ export class Target {
     this.word = this.root.find('.ship__text--highlight + .ship__text').first()
     this.wordText = word
     this.start = start
+    this.column = column
     this.goal = goal
     this.timeToReach = timeToReach
     this.step = 0
@@ -54,7 +56,7 @@ export class Target {
   }
 
   goalReached() {
-    this.goalReachedHandler(this.wordText)
+    this.goalReachedHandler(this)
     this.remove()
   }
 
