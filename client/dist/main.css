@@ -1,14 +1,12 @@
 html {
-  height: 100vh;
-  font-size: 10px;
   font-family: 'Orbitron', Arial, Helvetica, sans-serif;
 }
 
 body {
-  height: 100%;
   margin: 0;
   padding: 0;
   background-color: #000;
+  color: #fff;
 }
 
 input,
@@ -25,7 +23,9 @@ h2 {
 }
 
 .container {
-  height: 100%;
+  margin: 20px auto;
+  width: 800px;
+  padding: 0 50px;
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
@@ -34,9 +34,9 @@ h2 {
 
 .game {
   position: relative;
-  width: 90rem;
-  height: 80rem;
-  margin: 0 auto;
+  width: 800px;
+  height: 600px;
+  margin: 20px auto;
   vertical-align: middle;
   border: 2px solid #ffffe2;
 }
@@ -57,7 +57,7 @@ h2 {
   flex-flow: row nowrap;
   align-items: center;
   justify-content: center;
-  font-size: 2rem;
+  font-size: 20px;
 }
 
 .mode__info--hidden {
@@ -100,15 +100,15 @@ h2 {
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.4), 1px -1px 0 rgba(0, 0, 0, 0.4),
     -1px 1px 0 rgba(0, 0, 0, 0.4), 1px 1px 0 rgba(0, 0, 0, 0.4);
   width: 100%;
-  margin-bottom: 2rem;
+  margin-bottom: 20px;
 }
 
 .menu__heading--large {
-  font-size: 4rem;
+  font-size: 40px;
 }
 
 .menu__heading--medium {
-  font-size: 3rem;
+  font-size: 30px;
 }
 
 .menu__options {
@@ -121,7 +121,7 @@ h2 {
 .menu__button {
   width: fit-content;
   height: fit-content;
-  margin-bottom: 2rem;
+  margin-bottom: 20px;
   border: 1px solid rgba(0, 0, 0, 0.4);
   border-radius: 5px;
   outline: none;
@@ -129,7 +129,7 @@ h2 {
   color: #fff;
   text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.4), 1px -1px 0 rgba(0, 0, 0, 0.4),
     -1px 1px 0 rgba(0, 0, 0, 0.4), 1px 1px 0 rgba(0, 0, 0, 0.4);
-  font-size: 3.6rem;
+  font-size: 36px;
 }
 
 .menu__button:focus,
@@ -146,7 +146,7 @@ h2 {
   width: 100%;
   height: 100%;
   display: grid;
-  grid-template-columns: repeat(4, 230px);
+  grid-template-columns: repeat(4, 200px);
   grid-template-rows: 100%;
   overflow: hidden;
 }
@@ -176,14 +176,24 @@ h2 {
 
 .game-input {
   width: 80%;
-  height: 4rem;
+  height: 40px;
   border: 1px solid rgba(0, 0, 0, 0.4);
   border-radius: 5px;
-  font-size: 2rem;
+  font-size: 20px;
   text-align: center;
   text-transform: uppercase;
 }
 
 .game-input--hidden {
   visibility: hidden;
+}
+
+.instructions {
+  width: 100%;
+  padding: 15px;
+  text-align: center;
+}
+
+.instructions__text {
+  font-size: 20px;
 }
