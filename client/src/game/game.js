@@ -74,6 +74,7 @@ export class Game {
 
     this.score = 0
     this.scoreCounter = $('.score')
+    this.scoreCounter.html(this.score)
 
     this.life = 100
     this.lifeCounter = $('.life__points')
