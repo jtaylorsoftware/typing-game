@@ -18,7 +18,6 @@ export class TargetMap {
   delete(target) {
     const letter = target.getText()[0]
     if (this.get(letter) === target) {
-      target.remove()
       this.map.delete(letter)
       return true
     }
