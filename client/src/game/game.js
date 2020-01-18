@@ -62,7 +62,7 @@ export class Game {
       const data = await res.json()
       data.forEach(w => this.wordCache.add(w.toLowerCase()))
     } catch (error) {
-      console.error(error)
+      // console.error(error)
     }
   }
 
@@ -147,7 +147,7 @@ export class Game {
 
   targetReachedGoal(target) {
     const word = target.getText()
-    console.log(target, word)
+    // console.log(target, word)
     this.numTargets -= 1
     this.freeColumns.push(target.column)
     this.setLife(this.life - word.length)
@@ -244,7 +244,7 @@ export class Game {
       target.onGoalReached = this.targetReachedGoal.bind(this)
       this.targetMap.set(word[0], target)
     } catch (error) {
-      console.log(error)
+      // console.error(error)
     }
   }
 
@@ -305,7 +305,9 @@ export class Game {
         this.paused = this.gameOver = this.stopped = false
         this.frame = requestAnimationFrame(this.step)
       })
-      .catch(error => console.log(error))
+      .catch(error => {
+        // console.log(error)
+      })
   }
 
   async reset() {
@@ -322,7 +324,7 @@ export class Game {
 
     this.target = null
     this.freeColumns = Array.from({ length: 4 }, (v, i) => i + 1)
-    console.log(this.freeColumns)
+    // console.log(this.freeColumns)
     this.clearInput()
 
     this.score = 0
