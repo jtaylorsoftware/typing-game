@@ -21,8 +21,8 @@
     <script src="main.js" defer></script>
   </head>
   <body>
-    <section class="container">
-      <section class="game space">
+    <div class="container">
+      <div class="game space-theme">
         <section class="mode hud">
           <div class="mode__info mode__info--hidden">
             <p class="life">
@@ -39,7 +39,7 @@
               <button id="playButton" class="menu__button">Play</button>
             </div>
           </section>
-          <section id="gameOverMenu" class="menu menu--hidden">
+          <div id="gameOverMenu" class="menu menu--hidden">
             <h1 class="menu__heading menu__heading--large">Game Over</h1>
             <h2 class="menu__heading menu__heading--medium">
               Final score: <span id="menuScore">0</span>
@@ -49,14 +49,14 @@
                 Play Again
               </button>
             </div>
-          </section>
-          <section id="pauseMenu" class="menu menu--hidden">
+          </div>
+          <div id="pauseMenu" class="menu menu--hidden">
             <h1 class="menu__heading menu__heading--large">Paused</h1>
             <h2 class="menu__heading menu__heading--medium">
               Press ESC Again to Unpause
             </h2>
-          </section>
-          <section class="target-area"></section>
+          </div>
+          <div class="target-area"></div>
         </section>
         <section class="controls">
           <input
@@ -66,8 +66,7 @@
             spellcheck="false"
           />
         </section>
-      </section>
-      <!-- game -->
+      </div>
       <section class="instructions">
         <p class="instructions__text">
           Destroy the UFOs by typing the words displayed on them!<br />But be
@@ -75,7 +74,17 @@
           (Pressing ESC will pause the game)
         </p>
       </section>
-    </section>
-    <!-- container -->
+    </div>
+    <div class="footer">
+      a project by
+      <a
+        href="https://github.com/jeremyt135"
+        target="_blank"
+        rel="noreferrer noopener"
+        class="link link--github"
+      >
+        Jeremy Taylor</a
+      >
+    </div>
   </body>
 </html>

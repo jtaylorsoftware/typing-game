@@ -1,3 +1,9 @@
+:root {
+  --footer-height: 20px;
+  --main-bg-color: #000;
+  --main-color: #fff;
+}
+
 html {
   font-family: 'Orbitron', Arial, Helvetica, sans-serif;
 }
@@ -5,8 +11,13 @@ html {
 body {
   margin: 0;
   padding: 0;
-  background-color: #000;
-  color: #fff;
+  background-color: var(--main-bg-color);
+  color: var(--main-color);
+}
+
+html,
+body {
+  height: 100%;
 }
 
 input,
@@ -22,14 +33,50 @@ h2 {
   padding: 0;
 }
 
+.link,
+.link:hover,
+.link:active,
+.link:focus {
+  color: var(--main-color);
+  text-decoration: underline;
+}
+
+.link:hover,
+.link:active,
+.link:focus {
+  filter: brightness(75%);
+  outline: none;
+}
+
+.link--github {
+  padding: 0 5px;
+}
+
 .container {
-  margin: 20px auto;
-  width: 800px;
-  padding: 0 50px;
+  box-sizing: border-box;
+  margin: 20px auto -1 * var(--footer-height);
+  margin-left: auto;
+  margin-right: auto;
+  width: fit-content;
+  height: calc(100% - var(--footer-height));
   display: flex;
   flex-flow: column nowrap;
   justify-content: center;
   align-items: center;
+}
+
+.footer {
+  box-sizing: border-box;
+  position: relative;
+  height: var(--footer-height);
+  width: 800px;
+  padding: 0 15px;
+  margin: 0 auto;
+  display: flex;
+  flex-flow: row nowrap;
+  align-items: center;
+  justify-content: flex-end;
+  background-color: var(--main-bg-color);
 }
 
 .game {
