@@ -1,12 +1,12 @@
-import { Clock } from './clock'
-import { DeltaTimeCounter } from './deltatimecounter'
-import { Target } from './target'
-import { TargetMap } from './targetmap'
+import Clock from './clock'
+import DeltaTimeCounter from './deltatimecounter'
+import Target from './target'
+import TargetMap from './targetmap'
 
 /**
  * Controls Game logic and updating
  */
-export class Game {
+export default class Game {
   constructor() {
     this.clockText = $('.time')
     this.targetArea = $('.target-area')

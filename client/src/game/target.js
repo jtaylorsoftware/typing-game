@@ -1,7 +1,7 @@
 /**
  * Represents a target for the player to destroy
  */
-export class Target {
+export default class Target {
   /**
    *
    * @param {jquery} root The root jquery element for the target
