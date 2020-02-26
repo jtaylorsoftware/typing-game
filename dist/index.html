@@ -18,7 +18,8 @@
       crossorigin="anonymous"
       defer
     ></script>
-    <script src="main.js" defer></script>
+    <script src="wordlist.bundle.js" defer></script>
+    <script src="index.bundle.js" defer></script>
   </head>
   <body>
     <main class="container">
@@ -43,6 +44,9 @@
             <h1 class="menu__heading menu__heading--large">Game Over</h1>
             <h2 class="menu__heading menu__heading--medium">
               Final score: <span id="menuScore">0</span>
+            </h2>
+            <h2 class="menu__heading menu__heading--medium">
+              Your WPM: <span id="menuWpm">0</span>
             </h2>
             <div class="menu__options">
               <button id="playAgainButton" class="menu__button">

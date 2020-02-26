@@ -1,11 +1,10 @@
 const path = require('path')
 
 module.exports = {
-  entry: ['./src/index.js'],
+  entry: { index: './src/index.js', wordlist: './src/game/wordlist.js' },
   output: {
     path: path.resolve(__dirname, 'dist'),
-    publicPath: '/',
-    filename: 'main.js'
+    filename: '[name].bundle.js'
   },
   devServer: {
     contentBase: path.join(__dirname, 'dist'),

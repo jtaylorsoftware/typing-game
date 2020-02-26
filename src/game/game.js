@@ -20,7 +20,6 @@ export default class Game {
     this.GAMEPLAY_TIME = 1 // minutes
 
     this.targetMap = new TargetMap()
-    this.wordCache = new Set()
 
     this.clock = new Clock()
 
@@ -54,25 +53,6 @@ export default class Game {
 
     this.gameInput.on('input', this.processTyping.bind(this))
     this.step = this.step.bind(this)
-  }
-
-  async getRandomWords(count) {
-    try {
-      const res = await fetch(`/api/word?count=${count}`)
-      const data = await res.json()
-      data.forEach(w => this.wordCache.add(w.toLowerCase()))
-    } catch (error) {
-      // console.error(error)
-    }
-  }
-
-  async getWordFromCache() {
-    if (this.wordCache.size <= 20) {
-      await this.getRandomWords(100)
-    }
-    const next = this.wordCache.values().next().value
-    this.wordCache.delete(next)
-    return next
   }
 
   setLife(life) {
@@ -150,7 +130,7 @@ export default class Game {
     // console.log(target, word)
     this.numTargets -= 1
     this.freeColumns.push(target.column)
-    this.setLife(this.life - word.length)
+    this.setLife(this.life - (word.length + 5))
     if (word.startsWith(this.currentInput)) {
       this.target = null
       this.clearInput()
@@ -196,6 +176,7 @@ export default class Game {
       // destroy the target if the user finished typing the target word
       this.clearInput()
       this.setScore(this.score + targetText.length)
+      this.charsTyped += targetText.length
       this.destroyTarget()
     } else {
       // check the progress against the target word
@@ -222,30 +203,26 @@ export default class Game {
   /**
    * Appends a target to the target area
    */
-  async createTarget() {
+  createTarget() {
     // console.log('create target')
-    try {
-      let word = await this.getWordFromCache()
-      while (this.targetMap.has(word[0])) {
-        word = await this.getWordFromCache()
-      }
-      const column = this.freeColumns.shift()
-      const target = new Target(
-        word,
-        column,
-        0,
-        this.TARGET_GOAL,
-        Math.max(
-          this.MIN_TIMEREQUIRED,
-          randomInt(this.MIN_TIMEREQUIRED * word.length)
-        )
-      )
-      this.targetArea.append(target.root)
-      target.onGoalReached = this.targetReachedGoal.bind(this)
-      this.targetMap.set(word[0], target)
-    } catch (error) {
-      // console.error(error)
+    let word = getRandomWord()
+    while (this.targetMap.has(word[0])) {
+      word = getRandomWord()
     }
+    const column = this.freeColumns.shift()
+    const target = new Target(
+      word,
+      column,
+      0,
+      this.TARGET_GOAL,
+      Math.max(
+        this.MIN_TIMEREQUIRED,
+        randomInt(this.MIN_TIMEREQUIRED * word.length)
+      )
+    )
+    this.targetArea.append(target.root)
+    target.onGoalReached = this.targetReachedGoal.bind(this)
+    this.targetMap.set(word[0], target)
   }
 
   /**
@@ -277,7 +254,7 @@ export default class Game {
       // fill with targets
       if (this.numTargets < this.MAX_TARGETS) {
         this.numTargets += 1
-        this.createTarget().catch(err => console.error(err))
+        this.createTarget()
       }
       // move targets
       this.updateTargets(deltaTime)
@@ -293,34 +270,30 @@ export default class Game {
     this.modeInfo.addClass('mode__info--hidden')
     this.gameInput.addClass('game-input--hidden')
     $('#menuScore').html(this.score)
+    $('#menuWpm').html(
+      calculateWpm(
+        this.charsTyped,
+        (this.GAMEPLAY_TIME * 60 - this.clock.sec + 0.001) / 60
+      )
+    )
     $('#gameOverMenu').toggleClass('menu--hidden')
   }
 
   start() {
     this.reset()
-      .then(() => {
-        this.modeInfo.removeClass('mode__info--hidden')
-        this.gameInput.removeClass('game-input--hidden')
-        $('.game-input').focus()
-        this.paused = this.gameOver = this.stopped = false
-        this.frame = requestAnimationFrame(this.step)
-      })
-      .catch(error => {
-        // console.log(error)
-      })
+    this.modeInfo.removeClass('mode__info--hidden')
+    this.gameInput.removeClass('game-input--hidden')
+    $('.game-input').focus()
+    this.paused = this.gameOver = this.stopped = false
+    this.frame = requestAnimationFrame(this.step)
   }
 
-  async reset() {
+  reset() {
     this.timeCounter = new DeltaTimeCounter()
     this.clock.setTime(this.GAMEPLAY_TIME)
 
     this.numTargets = 0
     this.targetMap.clear()
-    this.wordCache.clear()
-    await this.getRandomWords(100)
-    if (this.wordCache.size === 0) {
-      throw Error('Could not reach server')
-    }
 
     this.target = null
     this.freeColumns = Array.from({ length: 4 }, (v, i) => i + 1)
@@ -330,6 +303,8 @@ export default class Game {
     this.score = 0
     this.scoreCounter = $('.score')
     this.scoreCounter.html(this.score)
+
+    this.charsTyped = 0
 
     this.life = 100
     this.lifeCounter = $('.life__points')
@@ -361,6 +336,14 @@ export default class Game {
     this.stopped = true
     cancelAnimationFrame(this.frame)
   }
+}
+
+function calculateWpm(charCount, minutes) {
+  return Math.ceil(charCount / 5 / minutes)
+}
+
+function getRandomWord() {
+  return wordList[randomInt(wordList.length)].toLowerCase()
 }
 
 function randomInt(max) {

@@ -1,4 +1,4 @@
-exports.wordList = [
+window.wordList = [
   'AMD',
   'AOL',
   'Aachen',
