@@ -1,7 +1,8 @@
 const path = require('path')
+const CopyPlugin = require('copy-webpack-plugin')
 
 module.exports = {
-  entry: { index: './src/index.js', wordlist: './src/game/wordlist.js' },
+  entry: { index: './src/index.js' },
   output: {
     path: path.resolve(__dirname, 'dist'),
     filename: '[name].bundle.js'
@@ -18,5 +19,6 @@ module.exports = {
         secure: false
       }
     ]
-  }
+  },
+  plugins: [new CopyPlugin([{ from: './src/game/wordlist.js', to: './' }])]
 }
