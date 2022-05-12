@@ -1,12 +1,32 @@
+import { LoginRequired, UserSession } from '../auth/session'
+import { getTopScores, showScores } from '../scores/scoreboard'
+import { uploadScore } from '../scores/uploadscore'
 import Clock from './clock'
 import DeltaTimeCounter from './deltatimecounter'
 import Target from './target'
 import TargetMap from './targetmap'
 
+/*
+ * Creates the game instance, which also performs
+ * necessary DOM manipulation such as adding event handlers
+ */
+export default function createGame() {
+  try {
+    return new Game()
+  } catch (error) {
+    console.error(error)
+  }
+}
+
 /**
  * Controls Game logic and updating
  */
-export default class Game {
+export class Game {
+  /**
+   * @type {UserSession}
+   */
+  #session = null
+
   constructor() {
     this.clockText = $('.time')
     this.targetArea = $('.target-area')
@@ -24,26 +44,35 @@ export default class Game {
     this.clock = new Clock()
 
     const gameArea = $('.game')
-    gameArea.keydown(e => {
-      if (e.which === 27) {
-        // escape
+
+    gameArea.on('keydown', (e) => {
+      if (e.code === 'Escape') {
         $('#pauseMenu').toggleClass('menu--hidden')
         this.paused = !this.paused
       }
     })
-    gameArea.click(() => {
-      gameArea.focus()
+
+    gameArea.on('click', () => {
+      gameArea.trigger('focus')
     })
-    gameArea.focus(() => {
+
+    gameArea.on('focus', () => {
       // console.log('game focused')
-      $('.game-input').focus()
+      $('.game-input').trigger('focus')
     })
-    $('#playButton').click(() => {
+
+    $('#playButton').on('click', () => {
       $('#playMenu').toggleClass('menu--hidden')
       this.start()
     })
-    $('#playAgainButton').click(() => {
+
+    $('#playAgainButton').on('click', () => {
       $('#gameOverMenu').toggleClass('menu--hidden')
+      this.start()
+    })
+
+    $('#restartButton').on('click', () => {
+      $('#pauseMenu').toggleClass('menu--hidden')
       this.start()
     })
 
@@ -53,6 +82,17 @@ export default class Game {
 
     this.gameInput.on('input', this.processTyping.bind(this))
     this.step = this.step.bind(this)
+
+    $('#gameLoadingProgress').addClass('gone')
+  }
+
+  /**
+   * Sets the session that belongs to the user and may be used to
+   * submit scores.
+   * @param {UserSession} session
+   */
+  setSession(session) {
+    this.#session = session
   }
 
   setLife(life) {
@@ -150,9 +190,7 @@ export default class Game {
   selectTarget() {
     // select a new target if there isn't one
     const target = this.selectTargetFromLetter(
-      this.getGameInput()
-        .slice(0, 1)
-        .toLowerCase()
+      this.getGameInput().slice(0, 1).toLowerCase()
     )
     // console.log(target)
     if (target) {
@@ -264,7 +302,7 @@ export default class Game {
     }
   }
 
-  onGameOver() {
+  async onGameOver() {
     this.gameOver = true
     this.paused = true
     this.modeInfo.addClass('mode__info--hidden')
@@ -277,13 +315,48 @@ export default class Game {
       )
     )
     $('#gameOverMenu').toggleClass('menu--hidden')
+    const submitButton = $('#submitScoreButton')
+    const submitProgress = $('#submitProgress')
+    submitProgress.text('')
+
+    const loggedIn = this.#session != null && (await this.#session.isLoggedIn())
+
+    submitButton.toggleClass('gone', !loggedIn)
+    submitProgress.toggleClass('gone', !loggedIn)
+
+    if (loggedIn) {
+      submitButton.prop('disabled', false)
+      submitButton.on('click', () => {
+        submitButton.off('click')
+        submitButton.prop('disabled', true)
+        submitProgress.text('Uploading score...')
+        uploadScore(this.score, this.#session)
+          .then(() => {
+            submitProgress.text('Uploaded!')
+          })
+          .catch((error) => {
+            submitProgress.text('Failed to upload score')
+            if (error instanceof LoginRequired) {
+              // TODO: Make sure this is correct way of handling it
+
+              // Make user login with redirect
+              this.#session
+                .onLogin()
+                .catch(() => console.log('User requires login again'))
+            }
+          })
+          .then(() => getTopScores())
+          .then((scores) => showScores(scores))
+          .catch(() => console.error('Error loading scores'))
+      })
+    }
   }
 
   start() {
     this.reset()
     this.modeInfo.removeClass('mode__info--hidden')
     this.gameInput.removeClass('game-input--hidden')
-    $('.game-input').focus()
+    $('.game-input').trigger('focus')
     this.paused = this.gameOver = this.stopped = false
     this.frame = requestAnimationFrame(this.step)
   }

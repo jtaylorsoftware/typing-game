@@ -22,66 +22,102 @@
   </head>
   <body>
     <main class="container">
-      <div class="game space-theme">
-        <section class="mode hud">
-          <div class="mode__info mode__info--hidden">
-            <p class="life">
-              Life: <span class="life__points life__points--healthy">0</span>
+      <div class="row">
+        <div class="col mh-auto">
+          <div class="game space-theme">
+            <section class="mode hud">
+              <div class="mode__info mode__info--hidden">
+                <p class="life">
+                  Life:
+                  <span class="life__points life__points--healthy">0</span>
+                </p>
+                <p class="clock">
+                  <span class="time time--high">00:00:000</span>
+                </p>
+                <p class="score">0</p>
+              </div>
+            </section>
+            <section class="gameplay">
+              <section id="playMenu" class="menu">
+                <h1 class="menu__heading menu__heading--large">Type Attack</h1>
+                <div class="menu__options">
+                  <p id="gameLoadingProgress">Loading...</p>
+                  <button id="playButton" class="menu__button">Play</button>
+                </div>
+              </section>
+              <div id="gameOverMenu" class="menu menu--hidden">
+                <h1 class="menu__heading menu__heading--large">Game Over</h1>
+                <h2 class="menu__heading menu__heading--medium">
+                  Final score: <span id="menuScore">0</span>
+                </h2>
+                <h2 class="menu__heading menu__heading--medium">
+                  Your WPM: <span id="menuWpm">0</span>
+                </h2>
+                <div class="menu__options">
+                  <button id="submitScoreButton" class="menu__button gone">
+                    Submit score
+                  </button>
+                  <p id="submitProgress" class="gone"></p>
+                  <button id="playAgainButton" class="menu__button">
+                    Play Again
+                  </button>
+                </div>
+              </div>
+              <div id="pauseMenu" class="menu menu--hidden">
+                <h1 class="menu__heading menu__heading--large">Paused</h1>
+                <h2 class="menu__heading menu__heading--medium">
+                  Press ESC Again to Unpause
+                </h2>
+                <div class="menu__options">
+                  <button id="restartButton" class="menu__button">
+                    Restart
+                  </button>
+                </div>
+              </div>
+              <div class="target-area"></div>
+            </section>
+            <section class="controls">
+              <input
+                type="text"
+                name="wordInput"
+                class="game-input game-input--hidden console"
+                spellcheck="false"
+              />
+            </section>
+          </div>
+          <!-- game -->
+          <section class="instructions">
+            <p class="instructions__text">
+              Destroy the UFOs by typing the words displayed on them!<br />But
+              be careful, only one UFO can be destroyed at a time! <br /><br />
+              (Pressing ESC will pause the game)
             </p>
-            <p class="clock"><span class="time time--high">00:00:000</span></p>
-            <p class="score">0</p>
-          </div>
-        </section>
-        <section class="gameplay">
-          <section id="playMenu" class="menu">
-            <h1 class="menu__heading menu__heading--large">Type Attack</h1>
-            <div class="menu__options">
-              <button id="playButton" class="menu__button">Play</button>
-            </div>
           </section>
-          <div id="gameOverMenu" class="menu menu--hidden">
-            <h1 class="menu__heading menu__heading--large">Game Over</h1>
-            <h2 class="menu__heading menu__heading--medium">
-              Final score: <span id="menuScore">0</span>
-            </h2>
-            <h2 class="menu__heading menu__heading--medium">
-              Your WPM: <span id="menuWpm">0</span>
-            </h2>
-            <div class="menu__options">
-              <button id="playAgainButton" class="menu__button">
-                Play Again
-              </button>
-            </div>
+        </div>
+        <!-- col -->
+        <div class="scoreboard">
+          <h3 class="scoreboard__header">Top Scores</h3>
+          <p id="scoreboardProgress" class="gone"></p>
+          <p id="scoreboardError" class="gone"></p>
+          <ul id="scoreboardList"></ul>
+          <div id="userbox">
+            <div id="currentUser" class="gone"></div>
+            <div id="noUser">Log in to submit scores</div>
+            <div id="sessionError"></div>
+            <button id="loginBtn" class="btn-fancy btn-md">Log in</button>
+            <button id="logoutBtn" class="gone btn-fancy btn-md">
+              Log out
+            </button>
           </div>
-          <div id="pauseMenu" class="menu menu--hidden">
-            <h1 class="menu__heading menu__heading--large">Paused</h1>
-            <h2 class="menu__heading menu__heading--medium">
-              Press ESC Again to Unpause
-            </h2>
-          </div>
-          <div class="target-area"></div>
-        </section>
-        <section class="controls">
-          <input
-            type="text"
-            name="wordInput"
-            class="game-input game-input--hidden console"
-            spellcheck="false"
-          />
-        </section>
+        </div>
+        <!-- scoreboard -->
       </div>
-      <section class="instructions">
-        <p class="instructions__text">
-          Destroy the UFOs by typing the words displayed on them!<br />But be
-          careful, only one UFO can be destroyed at a time! <br /><br />
-          (Pressing ESC will pause the game)
-        </p>
-      </section>
+      <!-- row -->
     </main>
     <footer class="footer">
       a project by
       <a
-        href="https://github.com/jeremyt135"
+        href="https://github.com/jtaylorsoftware"
         target="_blank"
         rel="noreferrer noopener"
         class="link link--github"
