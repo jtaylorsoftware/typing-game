@@ -5,25 +5,31 @@ module.exports = {
   entry: { index: './src/index.js' },
   target: ['web', 'es5'],
   output: {
-    path: path.resolve(__dirname, 'dist'),
+    path: path.join(__dirname, 'public', 'js'),
     filename: '[name].bundle.js',
   },
   devServer: {
-    static: ['dist'],
-    compress: true,
-    port: 3000,
-    proxy: [
+    static: [
       {
-        context: '/api',
-        target: 'http://localhost:5000',
-        changeOrigin: true,
-        secure: false,
+        directory: path.join(__dirname, 'public'),
+      },
+      {
+        directory: path.join(__dirname, 'public', 'js'),
+      },
+      {
+        directory: path.join(__dirname, 'src', 'game', 'wordlist.js'),
+        publicPath: '/js/wordlist.js',
+      },
+      {
+        directory: path.join(__dirname, 'public', 'css'),
       },
     ],
+    compress: true,
+    port: 3000,
   },
   plugins: [
     new CopyPlugin({
-      patterns: [{ from: './src/game/wordlist.js', to: './' }],
+      patterns: [{ from: './src/game/wordlist.js' }],
     }),
   ],
 }
