@@ -1,0 +1,19 @@
+version: 2.1
+
+orbs:
+  node: circleci/node@5.0.2
+  aws-s3: circleci/aws-s3@3.0.0
+
+workflows:
+  build-publish-s3:
+    jobs:
+      - node/run:
+          npm-run: build
+          post-steps:
+            - aws-s3/copy:
+                aws-access-key-id: AWS_ACCESS_KEY_ID_TA
+                aws-region: AWS_REGION_TA
+                aws-secret-access-key: AWS_SECRET_ACCESS_KEY_TA
+                from: dist/
+                to: $S3_BUCKET_TA
+                arguments: --recursive
