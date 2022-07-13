@@ -5,3 +5,7 @@ This is a typing game where players have 1 minute to type words (represented as 
 ## Play it now
 
 The game is currently playable at https://typeattack.jtaylorsoftware.com.
+
+### Leaderboard API
+
+Recently I've added a serverless leaderboard to the game (currently requires an account to submit scores). The project for this leaderboard can be found [here](https://github.com/jtaylorsoftware/game-services).
