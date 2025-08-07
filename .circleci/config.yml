@@ -15,18 +15,18 @@ jobs:
       - run:
           command: npm run build
       - persist_to_workspace:
-          root: /tmp/workspace
+          root: public
           paths:
-            - public/
+            - '*'
   publish:
     executor: aws-s3/default
     steps:
       - aws-cli/setup:
           profile_name: default
       - attach_workspace:
-          at: /tmp/workspace
+          at: public
       - aws-s3/copy:
-          from: public/
+          from: public
           to: $S3_BUCKET_TA
           arguments: --recursive
 
