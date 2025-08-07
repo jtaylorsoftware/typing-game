@@ -14,11 +14,17 @@ jobs:
           pkg-manager: npm
       - run:
           command: npm run build
+      - persist_to_workspace:
+          root: /tmp/workspace
+          paths:
+            - public/
   publish:
     executor: aws-s3/default
     steps:
       - aws-cli/setup:
           profile_name: default
+      - attach_workspace:
+          at: /tmp/workspace
       - aws-s3/copy:
           from: public/
           to: $S3_BUCKET_TA
