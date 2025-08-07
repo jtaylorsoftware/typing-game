@@ -5,15 +5,29 @@ orbs:
   aws-cli: circleci/aws-cli@5.4.1
   aws-s3: circleci/aws-s3@4.1.2
 
-workflows:
-  build-publish-s3:
-    jobs:
-      - node/run:
-          npm-run: build
+jobs:
+  build:
+    executor: node/default
+    steps:
+      - checkout
+      - node/install-packages:
+          pkg-manager: npm
+      - run:
+          command: npm run build
+  publish:
+    executor: aws-s3/default
+    steps:
+      - aws-cli/setup:
+          profile_name: default
       - aws-s3/copy:
           from: public/
           to: $S3_BUCKET_TA
           arguments: --recursive
-          auth:
-            - aws-cli/setup:
-                profile_name: default
+
+workflows:
+  build-publish-s3:
+    jobs:
+      - build
+      - publish:
+          requires:
+            - build
