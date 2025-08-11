@@ -325,7 +325,7 @@ h2 {
 }
 
 .game-input--hidden {
-  visibility: hidden;
+  opacity: 0;
 }
 
 .instructions {
