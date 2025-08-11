@@ -70,7 +70,7 @@ export default class Target {
     }
 
     const css = this.root[0].style.top || '0%'
-    let top = Number.parseInt(css.substr(0, css.length - 1))
+    let top = Number.parseInt(css.substring(0, css.length - 1))
     const remaining = this.goal - top
     if (remaining <= 0) {
       if (this.goalReachedHandler) {
