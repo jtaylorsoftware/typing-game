@@ -43,42 +43,64 @@ export class Game {
 
     this.clock = new Clock()
 
-    const gameArea = $('.game')
-
-    gameArea.on('keydown', (e) => {
+    $(document).on('keydown', (e) => {
       if (e.code === 'Escape') {
-        $('#pauseMenu').toggleClass('menu--hidden')
-        this.paused = !this.paused
+        if (!this.stopped)
+        {
+          $('#pauseMenu').toggleClass('menu--hidden')
+          this.paused = !this.paused
+          if (this.paused)
+          {
+            this.gameInput.addClass('game-input--hidden')
+          }
+          else
+          {
+            this.gameInput.removeClass('game-input--hidden')
+            this.gameInput.trigger('focus')
+          }
+        }
       }
     })
 
-    gameArea.on('click', () => {
-      gameArea.trigger('focus')
+    $('.game').on('click', () => {
+      this.gameInput.trigger('focus')
     })
 
-    gameArea.on('focus', () => {
-      // console.log('game focused')
-      $('.game-input').trigger('focus')
+    this.gameInput.on('focusout', () => {
+      console.log('game input lost focus')
+    })
+
+    this.gameInput.on('focus', () => {
+      console.log('game input gain focus')
     })
 
     $('#playButton').on('click', () => {
-      $('#playMenu').toggleClass('menu--hidden')
+      $('#playMenu').addClass('menu--hidden')
+      this.reset()
       this.start()
     })
 
     $('#playAgainButton').on('click', () => {
-      $('#gameOverMenu').toggleClass('menu--hidden')
+      $('#gameOverMenu').addClass('menu--hidden')
+      this.reset()
       this.start()
+    })
+
+    $('#quitButton').on('click', () => {
+      $('#pauseMenu').addClass('menu--hidden')
+      this.reset()
+      this.quitToMainMenu()
     })
 
     $('#restartButton').on('click', () => {
-      $('#pauseMenu').toggleClass('menu--hidden')
+      $('#pauseMenu').addClass('menu--hidden')
+      this.reset()
       this.start()
     })
 
-    this.gameOver = true
+    this.gameOver = false
     this.stopped = true
-    this.paused = true
+    this.paused = false
 
     this.gameInput.on('input', this.processTyping.bind(this))
     this.step = this.step.bind(this)
@@ -298,11 +320,11 @@ export class Game {
       this.updateTargets(deltaTime)
     } else {
       this.onGameOver()
-      // this.stop()
     }
   }
 
   async onGameOver() {
+    this.stop()
     this.gameOver = true
     this.paused = true
     this.modeInfo.addClass('mode__info--hidden')
@@ -314,7 +336,7 @@ export class Game {
         (this.GAMEPLAY_TIME * 60 - this.clock.sec + 0.001) / 60
       )
     )
-    $('#gameOverMenu').toggleClass('menu--hidden')
+    $('#gameOverMenu').removeClass('menu--hidden')
     const submitButton = $('#submitScoreButton')
     const submitProgress = $('#submitProgress')
     submitProgress.text('')
@@ -353,12 +375,18 @@ export class Game {
   }
 
   start() {
-    this.reset()
+    this.stopped = false
     this.modeInfo.removeClass('mode__info--hidden')
     this.gameInput.removeClass('game-input--hidden')
-    $('.game-input').trigger('focus')
-    this.paused = this.gameOver = this.stopped = false
     this.frame = requestAnimationFrame(this.step)
+    this.gameInput.trigger('focus')
+  }
+
+  quitToMainMenu() {
+    this.stop()
+    this.modeInfo.addClass('mode__info--hidden')
+    this.gameInput.addClass('game-input--hidden')
+    $('#playMenu').removeClass('menu--hidden')
   }
 
   reset() {
@@ -386,7 +414,7 @@ export class Game {
     this.frame = 0
 
     this.gameOver = false
-    this.stopped = false
+    this.paused = false
   }
 
   /**
@@ -404,6 +432,7 @@ export class Game {
     }
     this.frame = requestAnimationFrame(this.step)
   }
+
   stop() {
     // console.log('stopping')
     this.stopped = true
