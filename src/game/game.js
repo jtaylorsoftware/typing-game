@@ -162,10 +162,10 @@ export class Game {
       (/['\s]/.test(lastCharacter) && inputString.length > 0) // else apostrophe and space are valid
     // console.log(isValidCharacter)
     if (
-      this.getGameInput().length < this.currentInput.length ||
       this.gameOver ||
       this.paused ||
       this.stopped ||
+      this.getGameInput().length < this.currentInput.length ||
       !isValidCharacter
     ) {
       // only allow the user to type if the game is being played and
