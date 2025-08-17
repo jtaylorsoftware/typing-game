@@ -337,3 +337,33 @@ h2 {
 .instructions__text {
   font-size: 20px;
 }
+
+.difficulty {
+  display: flex;
+  flex-flow: row nowrap;
+  column-gap: 10px;
+}
+
+input[type="radio"].difficulty__radio {
+  appearance: none;
+  border: 0px;
+  width: 0px;
+  height: 0px;
+}
+
+.difficulty__label {
+  width: fit-content;
+  height: fit-content;
+  border: 1px solid rgba(0, 0, 0, 0.4);
+  border-radius: 5px;
+  outline: none;
+  background: linear-gradient(#337227, #143f0c);
+  color: #fff;
+  text-shadow: -1px -1px 0 rgba(0, 0, 0, 0.4), 1px -1px 0 rgba(0, 0, 0, 0.4),
+    -1px 1px 0 rgba(0, 0, 0, 0.4), 1px 1px 0 rgba(0, 0, 0, 0.4);
+  font-size: 36px;
+}
+
+input[type="radio"]:checked.difficulty__radio + .difficulty__label {
+  background: linear-gradient(#7ad468, #61b350);
+}

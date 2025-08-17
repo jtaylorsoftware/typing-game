@@ -42,7 +42,21 @@
                 <h1 class="menu__heading menu__heading--large">Type Attack</h1>
                 <div class="menu__options">
                   <p id="gameLoadingProgress">Loading...</p>
-                  <button id="playButton" class="menu__button">Play</button>
+                  <form id="difficulty" class="row difficulty">
+                    <div>
+                        <input type="radio" name="difficulty" value="0" id="difficultyEasy" class="difficulty__radio">
+                        <label for="difficultyEasy" class="difficulty__label">Easy</label>
+                    </div>
+                    <div>
+                      <input type="radio" name="difficulty" value="2" id="difficultyNormal" class="difficulty__radio" checked>
+                      <label for="difficultyNormal" class="difficulty__label">Normal</label>
+                    </div>
+                    <div>
+                      <input type="radio" name="difficulty" value="4" id="difficultyHard" class="difficulty__radio">
+                      <label for="difficultyHard" class="difficulty__label">Hard</label>
+                    </div>
+                  </form>
+                  <div class="row"><button id="playButton" class="menu__button">Play</button></div>
                 </div>
               </section>
               <div id="gameOverMenu" class="menu menu--hidden">

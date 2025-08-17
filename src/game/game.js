@@ -33,8 +33,11 @@ export class Game {
     this.gameInput = $('.game-input')
     this.modeInfo = $('.mode__info')
 
+    // min time for target to reach bottom in seconds
+    this.BASE_TIME_REQUIRED = 10
+    
     this.MAX_TARGETS = 4
-    this.MIN_TIMEREQUIRED = 5 // min time for target to reach bottom in seconds
+    
     this.TARGET_GOAL = 90
 
     this.GAMEPLAY_TIME = 1 // minutes
@@ -62,16 +65,17 @@ export class Game {
       }
     })
 
+    $('#difficulty').get(0).reset()
+
     $('.game').on('click', () => {
-      this.gameInput.trigger('focus')
+      if (!this.stopped && !this.paused)
+      {
+        this.gameInput.trigger('focus')
+      }
     })
 
-    this.gameInput.on('focusout', () => {
-      console.log('game input lost focus')
-    })
-
-    this.gameInput.on('focus', () => {
-      console.log('game input gain focus')
+    $('input[type="radio"][name="difficulty"]').on('change', (e) => {
+      this.difficulty = $(e.currentTarget).val()
     })
 
     $('#playButton').on('click', () => {
@@ -98,6 +102,7 @@ export class Game {
       this.start()
     })
 
+    this.difficulty = 2
     this.gameOver = false
     this.stopped = true
     this.paused = false
@@ -264,21 +269,31 @@ export class Game {
    * Appends a target to the target area
    */
   createTarget() {
-    // console.log('create target')
+    // Get the target word
     let word = getRandomWord()
     while (this.targetMap.has(word[0])) {
       word = getRandomWord()
     }
+
+    // Get first column available, fill left to right
     const column = this.freeColumns.shift()
+
+    // The min time to reach the goal - lower difficulty = slower speed.
+    // The target will never reach goal faster than this value.
+    const minTimeToGoal = this.BASE_TIME_REQUIRED - this.difficulty
+
+    // Determine actual time to goal, based on word length.
+    // Longer words will be slower on average.
+    const timeToGoal = Math.max(
+      minTimeToGoal,
+      randomInt(minTimeToGoal * word.length)
+    )
     const target = new Target(
       word,
       column,
       0,
       this.TARGET_GOAL,
-      Math.max(
-        this.MIN_TIMEREQUIRED,
-        randomInt(this.MIN_TIMEREQUIRED * word.length)
-      )
+      timeToGoal
     )
     this.targetArea.append(target.root)
     target.onGoalReached = this.targetReachedGoal.bind(this)
