@@ -4,7 +4,7 @@
 export default class Target {
   /**
    *
-   * @param {jquery} root The root jquery element for the target
+   * @param {string} word The word that must be typed for this target
    * @param {number} column The column of the target grid area to be placed in
    * @param {number} start The starting value of css "top"
    * @param {number} goal The value of css "top" to reach - the "goal"
@@ -39,7 +39,7 @@ export default class Target {
   }
 
   /**
-   * @param {function(number)} callback Function to invoke when goal is reached,
+   * @param {function(string)} callback Function to invoke when goal is reached,
    * taking word destroyed
    */
   set onGoalReached(callback) {
