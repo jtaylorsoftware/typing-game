@@ -12,7 +12,7 @@ export async function uploadScore(score, session) {
   try {
     const token = await session.getAccessToken()
     await axios.post(
-      'https://7jl348vded.execute-api.us-west-2.amazonaws.com/scores',
+      '/api/scores',
       {
         GameTitle: 'Type Attack',
         Score: score,

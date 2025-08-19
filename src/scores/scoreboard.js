@@ -4,7 +4,7 @@ export async function getTopScores() {
   showProgress()
   try {
     const response = await axios.get(
-      'https://7jl348vded.execute-api.us-west-2.amazonaws.com/scores',
+      '/api/scores',
       {
         params: { game: 'Type Attack', count: 10 },
       }
