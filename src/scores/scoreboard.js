@@ -6,7 +6,7 @@ export async function getTopScores() {
     const response = await axios.get(
       '/api/scores',
       {
-        params: { game: 'Type Attack', count: 10 },
+        params: { game: 'Words', count: 10 },
       }
     )
     hideProgress()

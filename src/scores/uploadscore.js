@@ -14,7 +14,7 @@ export async function uploadScore(score, session) {
     await axios.post(
       '/api/scores',
       {
-        GameTitle: 'Type Attack',
+        GameTitle: 'Words',
         Score: score,
       },
       {
