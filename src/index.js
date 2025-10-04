@@ -19,7 +19,6 @@ $(async () => {
   game.setSession(session)
 
   try {
-    await updateUi(session)
     await session.handleRedirectCallback()
     updateUi(session)
   } catch (error) {
