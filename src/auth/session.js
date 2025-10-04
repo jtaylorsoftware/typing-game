@@ -161,7 +161,7 @@ export class LoginRequired extends Error {
 /**
  * @param {UserSession} session
  */
-export async function updateUi(session) {
+export async function updateUserUI(session) {
   const loginBtn = $('#loginBtn')
   loginBtn.on('click', (e) => {
     e.preventDefault()

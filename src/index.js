@@ -1,6 +1,6 @@
 import createGame from './game/game'
 import { getTopScores, showScores } from './scores/scoreboard'
-import createUserSession, { updateUi } from './auth/session'
+import createUserSession, { updateUserUI } from './auth/session'
 import axios from 'axios'
 
 $(async () => {
@@ -23,7 +23,7 @@ $(async () => {
 
   try {
     await session.handleRedirectCallback()
-    updateUi(session)
+    updateUserUI(session)
   } catch (error) {
     console.error(error)
   }
