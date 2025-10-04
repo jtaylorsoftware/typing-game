@@ -1,4 +1,4 @@
-import createAuth0Client, { Auth0Client, User } from '@auth0/auth0-spa-js'
+import { Auth0Client, User, createAuth0Client } from '@auth0/auth0-spa-js'
 
 /**
  * Create an empty session that can handle a login attempt
@@ -30,7 +30,7 @@ export class UserSession {
     try {
       this.#auth0 = await createAuth0Client({
         domain: 'dev-8cswtg2p.us.auth0.com',
-        client_id: 'ohJyNtW7tqCi5opqQdwwnZKDSUXdEqhQ',
+        clientId: 'ohJyNtW7tqCi5opqQdwwnZKDSUXdEqhQ',
         audience: 'https://game-services-api.com',
       })
     } catch (error) {
@@ -48,11 +48,14 @@ export class UserSession {
 
     try {
       await this.#auth0.loginWithRedirect({
-        redirect_uri: window.location.origin,
+        authorizationParams: {
+          redirect_uri: window.location.origin
+        }
       })
     } catch (error) {
       console.error('Error performing login redirect')
     }
+
   }
 
   /**
@@ -63,8 +66,8 @@ export class UserSession {
       return
     }
 
-    this.#auth0.logout({
-      returnTo: window.location.origin,
+    await this.#auth0.logout({
+      logoutParams: { returnTo: window.location.origin }
     })
   }
 
@@ -136,11 +139,11 @@ export class UserSession {
     }
 
     const query = window.location.search
-    if (query.includes('code=') && query.includes('state=')) {
+    if (query.includes('code=') && (query.includes('state=') || query.includes('error='))) {
       const url = window.location.href
-      window.history.replaceState({}, document.title, '/')
       try {
         await this.#auth0.handleRedirectCallback(url)
+        window.history.replaceState({}, document.title, '/')
         this.#user = await this.#auth0.getUser()
       } catch (error) {
         throw new Error('Error getting user')
@@ -160,12 +163,14 @@ export class LoginRequired extends Error {
  */
 export async function updateUi(session) {
   const loginBtn = $('#loginBtn')
-  loginBtn.on('click', () => {
+  loginBtn.on('click', (e) => {
+    e.preventDefault()
     session.onLogin()
   })
 
   const logoutBtn = $('#logoutBtn')
-  logoutBtn.on('click', () => {
+  logoutBtn.on('click', (e) => {
+    e.preventDefault()
     session.onLogout()
   })
 
