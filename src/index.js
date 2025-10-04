@@ -1,8 +1,11 @@
 import createGame from './game/game'
 import { getTopScores, showScores } from './scores/scoreboard'
 import createUserSession, { updateUi } from './auth/session'
+import axios from 'axios'
 
 $(async () => {
+  axios.defaults.baseURL = 'https://words.jtaylorsoftware.com'
+
   getTopScores()
     .then((scores) => showScores(scores))
     .catch(() => console.error('Error loading scores'))
