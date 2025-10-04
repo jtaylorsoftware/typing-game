@@ -1,6 +1,7 @@
 import createGame from './game/game'
 import { getTopScores, showScores } from './scores/scoreboard'
-import createUserSession, { updateUserUI } from './auth/session'
+import createUserSession from './auth/session'
+import updateUserUI from './auth/session-ui'
 import axios from 'axios'
 
 $(async () => {
